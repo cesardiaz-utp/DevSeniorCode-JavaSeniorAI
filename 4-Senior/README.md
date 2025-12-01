@@ -4,8 +4,6 @@
 
 ### [Sección 1](1-DevOps/) - DevOps y CI/CD Moderno – Automatización y Despliegue en Entornos Reales
 
-**Clases:**
-
 1. 
 2. 
 3. 
@@ -16,8 +14,6 @@
 8. 
 
 ### [Sección 2](2-Proyecto/) - Proyecto Final Integrador + Preparación Profesional del Desarrollador Senior
-
-**Clases:**
 
 1. 
 2. 

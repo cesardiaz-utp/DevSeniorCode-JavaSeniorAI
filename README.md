@@ -11,23 +11,17 @@
 
 ## [Módulo 2](2-Backend/): Java Backend Developer – Enterprise Systems Engineering
 
-**Secciones:**
-
 1. Spring Boot desde Cero – Arquitectura Profesional para Aplicaciones Backend
 2. Bases de Datos Relacionales y NoSQL con Java y SpringBoot
 3. Seguridad, JWT y APIs Avanzadas en Spring Boot
 
 ## [Módulo 3](3-FullStack/): Java Full Stack Developer – Advanced Systems Integration
 
-**Secciones:**
-
 1. Angular moderno – Interfaces Dinámicas para Aplicaciones Full Stack
 2. Integración Full Stack Moderna – Spring Boot + Angular con Seguridad JWT
 3. Testing, Calidad y Buenas Prácticas para Aplicaciones Profesionales
 
 ## [Módulo 4](4-Senior/): Java Senior Developer – Advanced Software Architecture
-
-**Secciones:**
 
 1. DevOps y CI/CD Moderno – Automatización y Despliegue en Entornos Reales
 2. Proyecto Final Integrador + Preparación Profesional del Desarrollador Senior

@@ -4,8 +4,6 @@
 
 ### [Sección 1](1-Angular/) - Angular moderno – Interfaces Dinámicas para Aplicaciones Full Stack
 
-**Clases:**
-
 1. 
 2. 
 3. 
@@ -17,8 +15,6 @@
 
 ### [Sección 2](2-FullStack/) - Integración Full Stack Moderna – Spring Boot + Angular con Seguridad JWT
 
-**Clases:**
-
 1. 
 2. 
 3. 
@@ -29,8 +25,6 @@
 8. 
 
 ### [Sección 3](3-Calidad/) - Testing, Calidad y Buenas Prácticas para Aplicaciones Profesionales
-
-**Clases:**
 
 1. 
 2. 

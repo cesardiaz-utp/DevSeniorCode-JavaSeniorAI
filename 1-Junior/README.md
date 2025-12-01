@@ -4,8 +4,6 @@
 
 ### [Sección 1](1-Fundamentos/) - Fundamentos Modernos de Programación con Java
 
-**Clases:**
-
 1. 
 2. 
 3. 
@@ -16,8 +14,6 @@
 8. 
 
 ### [Sección 2](2-POO/) - Programación Orientada a Objetos
-
-**Clases:**
 
 1. 
 2. 
@@ -30,8 +26,6 @@
 
 ### [Sección 3](3-Excepciones/) - Manejo de Excepciones y Logging
 
-**Clases:**
-
 1. 
 2. 
 3. 
@@ -42,8 +36,6 @@
 8. 
 
 ### [Sección 4](4-Colecciones/) - Colecciones y Streams en Java
-
-**Clases:**
 
 1. 
 2. 
