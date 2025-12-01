@@ -2,8 +2,41 @@
 
 ## Módulo 3: Java Full Stack Developer – Advanced Systems Integration
 
-### Integración Full Stack Moderna – Spring Boot + Angular con Seguridad JWT
+### [Sección 1](1-Angular/) - Angular moderno – Interfaces Dinámicas para Aplicaciones Full Stack
 
-### Testing, Calidad y Buenas Prácticas para Aplicaciones Profesionales
+**Clases:**
 
-### DevOps y CI/CD Moderno – Automatización y Despliegue en Entornos Reales
+1. 
+2. 
+3. 
+4. 
+5. 
+6. 
+7. 
+8. 
+
+### [Sección 2](2-FullStack/) - Integración Full Stack Moderna – Spring Boot + Angular con Seguridad JWT
+
+**Clases:**
+
+1. 
+2. 
+3. 
+4. 
+5. 
+6. 
+7. 
+8. 
+
+### [Sección 3](3-Calidad/) - Testing, Calidad y Buenas Prácticas para Aplicaciones Profesionales
+
+**Clases:**
+
+1. 
+2. 
+3. 
+4. 
+5. 
+6. 
+7. 
+8. 
