@@ -2,8 +2,6 @@
 
 ## [Módulo 1](1-Junior/): Java Junior Developer – Professional Coding Foundations
 
-**Unidades:**
-
 1. Fundamentos Modernos de Programación con Java
 2. Programación Orientada a Objetos
 3. Manejo de Excepciones y Logging
