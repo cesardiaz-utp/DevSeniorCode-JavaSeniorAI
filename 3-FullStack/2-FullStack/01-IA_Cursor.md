@@ -73,14 +73,157 @@ Escribir buenos prompts es la nueva habilidad blanda (soft skill) esencial. Una 
 
 ## Parte 2: Práctica y Laboratorio (1h 15m)
 
+### Introducción a Gradle para Proyectos Spring Boot
+
+#### ¿Qué es Gradle?
+
+Gradle es una herramienta de automatización de compilación de código abierto que se basa en los conceptos de Apache Ant y Apache Maven. A diferencia de sus predecesores, que utilizan XML para la configuración, Gradle utiliza un Lenguaje Específico de Dominio (DSL) basado en Groovy o Kotlin. Esto permite escribir scripts de compilación más expresivos y menos verbosos.
+
+**Características principales de Gradle**:
+
+- **Flexibilidad**: Permite escribir lógica de compilación personalizada con la misma facilidad que se escribe código de aplicación.
+- **Rendimiento**: Gradle es rápido gracias a características como el almacenamiento en caché de tareas, la compilación incremental y el Gradle Daemon, que mantiene el proceso de compilación en memoria entre ejecuciones.
+- **Gestión de dependencias**: Ofrece un control robusto sobre las dependencias del proyecto, incluyendo soporte para dependencias transitivas y resolución de conflictos de versiones.
+- **Ecosistema de plugins**: Cuenta con un amplio repositorio de plugins para extender su funcionalidad, incluyendo el plugin oficial de Spring Boot.
+
+#### Gradle vs. Maven
+
+Si bien Maven sigue siendo muy popular, Gradle ha ganado una tracción significativa en la comunidad de Spring por varias razones:
+
+| Característica | Maven | Gradle |
+| --- | --- | --- |
+| **Configuración** | XML (verboso y rígido) | DSL con Groovy/Kotlin(conciso y flexible) |
+| **Rendimiento** | Más lento en compilaciones grandes | Más rápido debido a la caché y compilación incremental |
+| **Flexibilidad** | Convención sobre configuración, difícil de personalizar | Altamente personalizable con lógica de script |
+| **Curva de aprendizaje** | Más fácil para empezar | Requiere aprender Groovy/Kotlin DSL |
+
+Para muchos desarrolladores, la flexibilidad y el rendimiento de Gradle superan la curva de aprendizaje inicial.
+
+#### Creando un proyecto Spring Boot con Gradle
+
+La forma más sencilla de iniciar un proyecto Spring Boot con Gradle es a través de **[Spring Initializr](https://start.spring.io)**.
+
+1. Ve a https://start.spring.io.
+2. Selecciona **Gradle Project**.
+3. Elige el lenguaje (Java).
+4. Selecciona una versión estable de Spring Boot.
+5. Define los metadatos del proyecto (Group, Artifact, etc.).
+6. Añade las dependencias que necesites (ej. "Spring Web", "Spring Data JPA").
+7. Haz clic en "GENERATE" para descargar el proyecto.
+
+#### Entendiendo el archivo `build.gradle`
+
+Al descomprimir el proyecto, encontrarás el archivo `build.gradle`. Este es el corazón de la configuración de tu compilación.
+
+```groovy
+// 1. Plugins: Extienden la funcionalidad de Gradle
+plugins {
+  id 'java' // Plugin para compilar código Java
+  id 'org.springframework.boot' version '3.5.9' // Plugin de Spring Boot
+  id 'io.spring.dependency-management' version '1.1.7' // Gestiona versiones de dependencias
+}
+
+// 2. Metadatos del proyecto
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+// 3. Configuración de Java
+java {
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(21) // Versión del JDK
+  }
+}
+
+// 4. Repositorios: Dónde buscar las dependencias
+repositories {
+  mavenCentral() // Repositorio central de Maven
+}
+
+// 5. Dependencias del proyecto
+dependencies {
+  // Dependencia para crear aplicaciones web con Spring MVC
+  implementation 'org.springframework.boot:spring-boot-starter-web'
+
+  // Dependencia para Lombok (opcional)
+  compileOnly 'org.projectlombok:lombok'
+  annotationProcessor 'org.projectlombok:lombok'
+
+  // Dependencia solo para desarrollo (ej. DevTools)
+  developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+  // Dependencia para pruebas
+  testImplementation 'org.springframework.boot:spring-boot-starter-test'
+  testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+// 6. Configuración de tareas
+tasks.named('test') {
+  useJUnitPlatform() // Habilita el soporte para JUnit 5
+}
+```
+
+**Desglose del archivo**:
+
+1. **plugins**: Aquí se declaran los plugins. El plugin `org.springframework.boot` es fundamental, ya que proporciona tareas para ejecutar y empaquetar la aplicación.
+2. **group** y **version**: Coordenadas que identifican tu proyecto.
+3. **java.toolchain.languageVersion**: Especifica la versión del lenguaje Java que se utilizará.
+4. **repositories**: Define los repositorios desde los cuales Gradle descargará las dependencias. `mavenCentral()` es el más común.
+5. **dependencies**: El bloque más importante para la gestión de dependencias.
+    - **implementation**: Dependencias necesarias para la compilación y ejecución del código principal.
+    - **compileOnly**: Dependencias necesarias solo en tiempo de compilación (como Lombok).
+    - **runtimeOnly**: Dependencias necesarias solo en tiempo de ejecución.
+    - **developmentOnly**: Dependencias que solo se usan en desarrollo local, como Spring Boot DevTools.
+    - **testImplementation**: Dependencias para compilar y ejecutar tests.
+
+#### Tareas Comunes de Gradle en un Proyecto Spring
+
+El plugin de Spring Boot para Gradle proporciona varias tareas útiles que puedes ejecutar desde la terminal en la raíz de tu proyecto:
+
+- **Ejecutar la aplicación**:
+
+  ```bash
+  ./gradlew bootRun
+  ```
+
+  Esta tarea compila y ejecuta la aplicación sin crear un archivo JAR. Es ideal para el desarrollo.
+
+- **Construir el proyecto**:
+
+  ```bash
+  ./gradlew build
+  ```
+
+  Esta tarea compila el código, ejecuta los tests y empaqueta la aplicación en un archivo JAR (o WAR) ejecutable en el directorio `build/libs`.
+
+- **Ejecutar los tests**:
+
+  ```bash
+  ./gradlew test
+  ```
+
+  Ejecuta todas las pruebas unitarias y de integración del proyecto.
+
+- **Limpiar el proyecto**:
+
+  ```bash
+  ./gradlew clean
+  ```
+
+  Elimina el directorio `build`, borrando todos los artefactos de compilación anteriores.
+
+El `./gradlew` es el "Gradle Wrapper", un script que descarga y utiliza la versión correcta de Gradle especificada en el proyecto, asegurando compilaciones consistentes en diferentes entornos.
+
 ### Paso 1: Setup Inicial y Verificación
 
 1. Descargar e instalar [Cursor](https://cursor.com/) desde el sitio oficial.
 2. Durante la instalación, selecciona la opción "Importar extensiones de VS Code" para mantener tu entorno familiar.
+    - [Extension Pack for Java](https://open-vsx.org/extension/VMware/vscode-boot-dev-pack)
+    - [Spring Boot Extension Pack](https://open-vsx.org/extension/vscjava/vscode-java-pack)
+    - [Angular Language Service](https://open-vsx.org/extension/Angular/ng-template)
 3. Abre la carpeta raíz del proyecto, asegurándote de tener acceso a `MediCare-Backend` y `MediCare-Frontend`.
 4. **Verificación**: Abre la paleta de comandos (`Cmd+Shift+P` / `Ctrl+Shift+P`) y escribe "Cursor: Settings" para verificar que la IA está activa.
 
-### Paso 2: Configuración de la IA (Backend - Spring Boot 4)
+### Paso 2: Configuración de la IA Backend (Spring Boot 4)
 
 El ecosistema de Java evoluciona rápidamente. Spring Boot 4 introduce cambios significativos y Java 25 trae características sintácticas que reducen la verbosidad.
 
@@ -118,7 +261,7 @@ You are an expert in Java 25, Spring Boot 4, and Modern REST API development.
 - Prefer `Testcontainers` for database integration tests.
 ```
 
-### Paso 3: Configuración de la IA (Frontend - Angular 21)
+### Paso 3: Configuración de la IA Frontend (Angular 21)
 
 Angular ha sufrido un renacimiento. La versión 21 consolida la arquitectura "Zone-less" y basada en Signals. Es crítico configurar esto para evitar que la IA genere código estilo "Angular 14" con módulos y decoradores obsoletos, y asegurar que los nombres estén en inglés.
 
