@@ -131,7 +131,7 @@ Transformaremos componentes "feos" o con CSS legado en componentes modernos y re
     - Padding vertical y horizontal (`px-4 py-3`).
     - Flexbox para separar logo y menú (`flex justify-between items-center`).
     - Sombra elevada (`shadow-lg`).
-    - Texto blanco y seminegrita (`text-white font-semibold`)."
+    - Texto blanco y semi-negrita (`text-white font-semibold`)."
     ```
 
 2. **Diseño de Cards Interactivas**: Para la lista de doctores o especialidades. Observa el uso de `group` y `hover`. **Prompt**:
@@ -194,7 +194,7 @@ Conectaremos las piezas y verificaremos el flujo de red.
     - Añade manejo de errores básico con `.pipe(catchError(...))`."
     ```
 
-3. **Renderizado Reactivo en el Componente**: En lugar de usar `.subscribe()` manualmente y gestionar la desuscripción (`ngOnDestroy`), usaremos el `AsyncPipe` en el template o Signals.
+3. **Renderizado Reactivo en el Componente**: En lugar de usar `.subscribe()` manualmente y gestionar la descripción (`ngOnDestroy`), usaremos el `AsyncPipe` en el template o Signals.
     - _En el TS_: `specialties$ = this.doctorService.getAllSpecialties();`
     - _En el HTML_: `@for (item of specialties$ | async; track item.id) { ... }`
 4. **Prueba de Fuego (Debugging)**: Abre Chrome DevTools (F12) -> Pestaña Network. Al cargar la página, observa la columna "Type".
