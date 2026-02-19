@@ -42,13 +42,13 @@ JUnit 5 no es solo una actualización; es un rediseño modular que separa la API
 Las aserciones son los predicados que determinan si un test pasa o falla. JUnit 5 ofrece un catálogo extenso para cubrir diversas necesidades semánticas:
 
 - `assertEquals(esperado, actual)` / `assertNotEquals(...)`: La base de cualquier test. Compara valores primitivos u objetos usando el método `.equals()`.
-- `assertTrue(condicion)` / `assertFalse(condicion)`: Valida estados booleanos o predicados lógicos.
+- `assertTrue(condición)` / `assertFalse(condición)`: Valida estados booleanos o predicados lógicos.
 - `assertNull(objeto)` / `assertNotNull(objeto)`: Crítico para validar que servicios o repositorios no retornen nulidad inesperada, o para asegurar que un campo se limpió correctamente.
 - `assertSame(obj1, obj2)`: A diferencia de `assertEquals`, esta valida la identidad referencial (que ambos apunten a la misma posición de memoria).
 - `assertIterableEquals(lista1, lista2)`: Compara el contenido y el orden de dos colecciones, asegurando que la secuencia de datos sea idéntica.
 - `assertAll("Etiqueta", ...lambdas)`: Conocida como _Grouped Assertions_. Permite ejecutar múltiples aserciones incluso si las primeras fallan. Es ideal para validar todos los campos de un objeto de una sola vez sin que el test se detenga en el primer error.
-- `assertThrows(Excepcion.class, () -> codigo)`: Captura la excepción lanzada. Esto nos permite realizar aserciones adicionales sobre el contenido del error, como códigos de error internos o mensajes personalizados de validación.
-- `assertTimeout(Duration, () -> codigo)`: Valida que un algoritmo cumpla con un SLA (Service Level Agreement) de tiempo máximo de ejecución.
+- `assertThrows(Exception.class, () -> código)`: Captura la excepción lanzada. Esto nos permite realizar aserciones adicionales sobre el contenido del error, como códigos de error internos o mensajes personalizados de validación.
+- `assertTimeout(Duration, () -> código)`: Valida que un algoritmo cumpla con un SLA (Service Level Agreement) de tiempo máximo de ejecución.
 
 ### C. Aislamiento Estratégico con Mockito
 
@@ -145,7 +145,144 @@ Para que una prueba sea legible y profesional, debe seguir una estructura clara 
 2. **Act (Actuar)**: Invocamos el método específico que estamos probando.
 3. **Assert (Verificar)**: Validamos que el resultado y el comportamiento de los mocks coincidan con lo esperado.
 
-### E. Justificación Arquitectónica del Aislamiento
+### E. Cobertura de Código con JaCoCo (Java Code Coverage)
+
+**JaCoCo** no es solo un generador de reportes; es una herramienta de análisis dinámico que instrumenta el _bytecode_ de Java para detectar qué partes de tu aplicación se ejecutaron realmente durante las pruebas.
+
+#### 1. Desglose de Métricas Críticas
+
+- **Branch Coverage (C1)**: Para un Arquitecto, esta es la métrica reina. Verifica si se han evaluado todos los caminos posibles en estructuras de control (`if`, `switch`, bucles).
+  - _Ejemplo_: En un `if (x > 0)`, tener 50% de Branch Coverage significa que solo probaste el caso `true` o el `false`, dejando una vulnerabilidad lógica sin descubrir.
+- **Cyclomatic Complexity**: Mide la complejidad de tus métodos basándose en el número de caminos lineales independientes. Un método con complejidad alta y baja cobertura es un candidato número uno para Refactorización o bugs.
+- **Line Coverage**: Métrica básica que indica si la línea fue "tocada" por el test. Es útil, pero engañosa (puedes tocar una línea sin validar su lógica).
+
+#### 2. Configuración de Quality Gates (Umbrales de Calidad)
+
+En un entorno profesional, no confiamos en la buena voluntad. Configuramos el sistema de construcción para que falle automáticamente si no se cumplen los estándares.
+
+##### Opción A: Configuración en Maven (`pom.xml`)
+
+```xml
+<plugin>
+    <groupId>org.jacoco</groupId>
+    <artifactId>jacoco-maven-plugin</artifactId>
+    <version>0.8.14</version>
+    <executions>
+        <!-- 1. Prepara el agente de runtime para instrumentar el código -->
+        <execution>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+        </execution>
+        <!-- 2. Genera el reporte HTML tras los tests -->
+        <execution>
+            <id>report</id>
+            <phase>test</phase>
+            <goals><goal>report</goal></goals>
+        </execution>
+        <!-- 3. REGLA DE ORO: Falla el build si no se cumple el umbral -->
+        <execution>
+            <id>jacoco-check</id>
+            <goals><goal>check</goal></goals>
+            <configuration>
+                <rules>
+                    <rule>
+                        <element>PACKAGE</element>
+                        <limits>
+                            <limit>
+                                <counter>LINE</counter>
+                                <value>COVEREDRATIO</value>
+                                <minimum>0.80</minimum> <!-- Mínimo 80% de líneas -->
+                            </limit>
+                            <limit>
+                                <counter>BRANCH</counter>
+                                <value>COVEREDRATIO</value>
+                                <minimum>0.70</minimum> <!-- Mínimo 70% de ramas lógicas -->
+                            </limit>
+                        </limits>
+                    </rule>
+                </rules>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+```
+
+Para ejecutar las pruebas y ver la cobertura, los alumnos deben ejecutar:
+
+```bash
+mvn clean verify
+```
+
+##### Opción B: Configuración en Gradle (`build.gradle`)
+
+Para proyectos que usan Gradle, la configuración equivalente se ve así:
+
+```groovy
+plugins {
+    id 'jacoco'
+}
+
+test {
+    finalizedBy jacocoTestReport // El reporte se genera después de los tests
+}
+
+jacocoTestReport {
+    dependsOn test 
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            element = 'PACKAGE'
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.80 // Mínimo 80% líneas
+            }
+            limit {
+                counter = 'BRANCH'
+                value = 'COVEREDRATIO'
+                minimum = 0.70 // Mínimo 70% ramas
+            }
+        }
+    }
+}
+
+// Obliga a verificar cobertura al ejecutar 'check'
+check.dependsOn jacocoTestCoverageVerification
+```
+
+Para ejecutar las pruebas y ver la cobertura, los alumnos deben ejecutar:
+
+```bash
+./gradlew check
+```
+
+#### 3. Interpretación Estratégica
+
+Un 100% de cobertura no garantiza ausencia de bugs (puedes cubrir código con aserciones malas), pero una cobertura baja garantiza deuda técnica. Usamos JaCoCo para encontrar **código muerto** o **casos de borde olvidados**.
+
+### F. Manifiesto de "Clean Testing" (Mejores Prácticas)
+
+Para que una suite de pruebas sea mantenible y escale junto con el proyecto, debemos adherirnos a principios estrictos de diseño. Un mal test es peor que no tener tests, ya que genera falsa confianza y altos costos de mantenimiento.
+
+1. **Naming Convention (Semántica)**: El nombre del test debe ser una oración descriptiva que explique el escenario, la acción y el resultado esperado.
+    - **Anti-patrón**: `testSave()`, `testError()`.
+    - **Patrón Recomendado (BDD Style)**: `shouldThrowException_When_UserIsUnderage()` o `givenValidData_whenSave_thenPersist()`.
+2. **Determinismo Absoluto (No Flaky Tests)**: Un test debe pasar hoy, mañana, en el año 3000 y en cualquier zona horaria.
+    - **Prohibido**: Usar `LocalDateTime.now()` o `new Date()` directamente dentro de la lógica de negocio sin inyectar un `Clock`.
+    - **Solución**: Simular (Mock) el proveedor de tiempo para controlar el "ahora" durante el test.
+3. **Independencia y Aislamiento**: Nunca encadenes tests. El resultado del _Test A_ no debe ser pre-condición para el _Test B_. JUnit no garantiza el orden de ejecución. Cada test debe preparar su propio entorno (`@BeforeEach`) y limpiarlo si es necesario.
+4. **No Logic inside Tests**: Si tu test contiene estructuras de control como `if`, `while`, `for` o `switch`, es una señal de alta complejidad ciclomática en el test.
+    - _Regla_: El flujo del test debe ser lineal: _Arrange -> Act -> Assert_. Si necesitas lógica condicional, probablemente necesitas dos tests separados.
+5. **Una Razón para Fallar (Single Responsibility Principle)**: Evita probar múltiples comportamientos en un solo método (`testSaveAndThenDelete`). Si falla, el diagnóstico es confuso. Divide y vencerás: un test para el guardado, otro para el borrado.
+
+### G. Justificación Arquitectónica del Aislamiento
 
 ¿Por qué evitar `@SpringBootTest` en esta fase?
 
@@ -189,7 +326,7 @@ public class AppointmentConflictException extends RuntimeException {
 public class AppointmentService {
     private final AppointmentRepository repository;
 
-    // Inyección por constructor: La mejor práctica para facilitar el testeo
+    // Inyección por constructor: La mejor práctica para facilitar el testing
     public AppointmentService(AppointmentRepository repository) {
         this.repository = repository;
     }
@@ -294,3 +431,4 @@ Para que estas pruebas sean mantenibles a largo plazo, se deben seguir estos con
 - [Mockito Official Site](https://site.mockito.org/): Guía completa para aprender a realizar stubs, verifications y el uso de anotaciones.
 - [Java 25 (JEP 459 - Records)](https://openjdk.org/jeps/459): Documentación sobre cómo los Records mejoran la inmutabilidad y reducen el código repetitivo en Java moderno.
 - [Baeldung - Spring Boot Testing](https://www.baeldung.com/spring-boot-testing): Un recurso excelente con ejemplos prácticos sobre los diferentes niveles de prueba en Spring.
+- [JaCoCo Official Site](https://www.jacoco.org/)
