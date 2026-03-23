@@ -10,6 +10,6 @@
 * [Clase 4](4-Control.md) - Dominio de la Toma de Decisiones: De Sentencias Imperativas a Expresiones Declarativas en Java
 * [Clase 5](5-Ciclos.md) - El Dominio de la Iteración: Control de Flujo y Eficiencia Estructural en Java
 * [Clase 6](6-StringFunciones.md) - Manipulación Avanzada de Cadenas y la Ciencia de la Modularidad en Java
-* [Clase 7](7-) -
-* [Clase 8](8-) -
+* [Clase 7](7-Debugging.md) - El Arte de la Guerra contra el Bug: Algoritmia y Debugging
+* [Clase 8](8-Taller.md) - Laboratorio de Integración
 * [Proyecto de la Unidad](Proyecto.md)

@@ -4,7 +4,7 @@
 
 ## 🚀 Setup de Clase
 
-Para un desarrollador Senior, el entorno no es solo una herramienta, es una extensión de su capacidad lógica. Sigue este orden estrictamente para garantizar la compatibilidad total con las nuevas características de Java 25:
+Para un Desarrollador Senior, el entorno no es solo una herramienta, es una extensión de su capacidad lógica. Sigue este orden estrictamente para garantizar la compatibilidad total con las nuevas características de Java 25:
 
 ### 1. Instalación y Configuración del JDK 25 (El Motor)
 

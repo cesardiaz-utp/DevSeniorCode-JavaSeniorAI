@@ -14,7 +14,7 @@ Para esta sesión, aprovecharemos las capacidades de **Java 25** que permiten si
 
 ### El Arte de ser Senior: Pensamiento Sistémico en los Datos
 
-Un desarrollador Senior no ve una variable como un nombre; la ve como un **contrato de acceso a la memoria**. Elegir el tipo de dato correcto y limitar su ámbito (scope) no es solo estética, es una estrategia para reducir la superficie de errores y optimizar el trabajo del recolector de basura (Garbage Collector).
+Un Desarrollador Senior no ve una variable como un nombre; la ve como un **contrato de acceso a la memoria**. Elegir el tipo de dato correcto y limitar su ámbito (scope) no es solo estética, es una estrategia para reducir la superficie de errores y optimizar el trabajo del recolector de basura (Garbage Collector).
 
 ### 🔍 El Concepto de Variable en la JVM
 
