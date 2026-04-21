@@ -4,7 +4,7 @@
 
 El sistema "MediCare" ha sido un éxito en las pruebas locales. Ahora, la junta directiva ha aprobado el presupuesto para llevarlo a producción. Sin embargo, el equipo de operaciones exige que el software cumpla con los estándares de la industria moderna: debe ser desplegable en cualquier nube (agnóstico), debe auto-testearse antes de cualquier cambio, y debe ser capaz de escalar si la carga de usuarios aumenta.
 
-Como Arquitecto de Software y Líder Técnico, tu misión es tomar el código existente (Backend + Frontend) y construir la "Fábrica de Software" (Pipeline) y la "Infraestructura" (Docker) necesarias para soportar el negocio.
+Como Desarrollador de Software y Líder Técnico, tu misión es tomar el código existente (Backend + Frontend) y construir la "Fábrica de Software" (Pipeline) y la "Infraestructura" (Docker) necesarias para soportar el negocio.
 
 ## Objetivos de Aprendizaje Evaluados
 
