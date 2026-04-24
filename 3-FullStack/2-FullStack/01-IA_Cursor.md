@@ -5,12 +5,12 @@
 
 ## Parte 1: Teoría Profunda (45 Minutos)
 
-### 1. El Nuevo Rol del Desarrollador: De "Picapedrero" a Arquitecto
+### 1. El Nuevo Rol del Desarrollador: De "Picapedrero" a Desarrollador
 
 La llegada de la Inteligencia Artificial Generativa al flujo de trabajo del desarrollo de software no marca el fin de la programación, sino una **evolución en la abstracción**. La IA no está aquí para reemplazar a los desarrolladores, sino para potenciar sus capacidades y eliminar la fricción de la sintaxis repetitiva.
 
 - **El Pasado (Albañiles del Código)**: Antes, nuestra carga cognitiva estaba saturada por la sintaxis. Pasábamos horas escribiendo _boilerplate_, configurando inyecciones de dependencias manuales, cerrando llaves y buscando en Google cómo iterar un mapa en Java. El valor se medía en líneas de código producidas.
-- **El Presente (Arquitectos y Auditores)**: Ahora, nuestro foco se desplaza hacia el diseño de sistemas, la seguridad y la lógica de negocio.
+- **El Presente (Desarrolladors y Auditores)**: Ahora, nuestro foco se desplaza hacia el diseño de sistemas, la seguridad y la lógica de negocio.
   - **Arquitectura**: Definimos qué debe hacer el sistema, cómo se comunican los microservicios y qué patrones de diseño aplicar.
   - **Auditoría**: La IA escribe la implementación, pero nosotros somos los responsables finales. Debemos tener la capacidad técnica para leer el código generado, identificar vulnerabilidades y asegurar que cumple con los estándares del equipo.
 - **La Regla de Oro de la IA**: _Nunca aceptes código que no entiendas o no puedas explicar_.
@@ -57,7 +57,7 @@ Escribir buenos prompts es la nueva habilidad blanda (soft skill) esencial. Una 
 
 #### C (Contexto): Define el rol y el escenario
 
-"Actúa como un arquitecto de software experto en sistemas médicos y Angular 21..."
+"Actúa como un desarrollador de software experto en sistemas médicos y Angular 21..."
 
 #### I (Instrucción): El verbo de acción claro y directo
 

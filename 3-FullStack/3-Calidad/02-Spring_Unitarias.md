@@ -1,7 +1,7 @@
 # Unidad 3 - Clase 2: Pruebas Unitarias en Spring Boot con JUnit 5 y Mockito
 
 - **Duración**: 2 horas
-- **Objetivo**: El objetivo fundamental de esta sesión es dominar el **aislamiento de lógica de negocio** mediante una mentalidad de Arquitecto de Software. En el desarrollo de sistemas empresariales, la deuda técnica suele acumularse por la falta de una red de seguridad confiable.
+- **Objetivo**: El objetivo fundamental de esta sesión es dominar el **aislamiento de lógica de negocio** mediante una mentalidad de Desarrollador de Software. En el desarrollo de sistemas empresariales, la deuda técnica suele acumularse por la falta de una red de seguridad confiable.
 
 Aprenderemos a construir esta red validando la integridad de nuestros servicios mediante pruebas que sean:
 
@@ -29,7 +29,7 @@ JUnit 5 no es solo una actualización; es un rediseño modular que separa la API
   ```
 
 - `@BeforeAll` (estático) se usa para configuraciones pesadas una sola vez (raro en pruebas unitarias puras).
-- `@DisplayName`: Un arquitecto escribe código para humanos. Esta anotación permite que el reporte de Jenkins o GitHub Actions muestre "Debería rechazar citas si el médico está de vacaciones" en lugar de `test_err_01()`.
+- `@DisplayName`: Un desarrollador escribe código para humanos. Esta anotación permite que el reporte de Jenkins o GitHub Actions muestre "Debería rechazar citas si el médico está de vacaciones" en lugar de `test_err_01()`.
 
   ```java
   @Test
@@ -54,12 +54,12 @@ Las aserciones son los predicados que determinan si un test pasa o falla. JUnit 
 
 Mockito nos permite aplicar el principio de Inversión de Control en nuestras pruebas. Si el `AppointmentService` depende de un `Repository`, el "Contrato" es lo que importa, no la implementación.
 
-| Concepto | Profundización Técnica | Rol en el Ecosistema |
-| --- | --- | --- |
-| `@Mock` | Crea un objeto Proxy que intercepta todas las llamadas. | Sustituye componentes pesados o externos (DB, Colas, APIs). |
-| `@InjectMocks` | Realiza una inyección de dependencias basada en tipos. | Automatiza la creación del Sujeto Bajo Prueba (SUT). |
-| **Stubbing (`when`)** | Programación del comportamiento esperado (Entrada -> Salida). | Define los escenarios (Éxito, Error, Datos vacíos). |
-| **Verification (`verify`)** | Auditoría de comportamiento posterior a la ejecución. | Asegura que las reglas de negocio se ejecuten (ej: ¿Se envió el mail?). |
+| Concepto                    | Profundización Técnica                                        | Rol en el Ecosistema                                                    |
+| --------------------------- | ------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| `@Mock`                     | Crea un objeto Proxy que intercepta todas las llamadas.       | Sustituye componentes pesados o externos (DB, Colas, APIs).             |
+| `@InjectMocks`              | Realiza una inyección de dependencias basada en tipos.        | Automatiza la creación del Sujeto Bajo Prueba (SUT).                    |
+| **Stubbing (`when`)**       | Programación del comportamiento esperado (Entrada -> Salida). | Define los escenarios (Éxito, Error, Datos vacíos).                     |
+| **Verification (`verify`)** | Auditoría de comportamiento posterior a la ejecución.         | Asegura que las reglas de negocio se ejecuten (ej: ¿Se envió el mail?). |
 
 **Ejemplo Detallado de Stubbing**: El stubbing es el arte de predecir el futuro de una dependencia para probar cómo reacciona nuestro código. En escenarios profesionales, no solo devolvemos valores simples; manejamos flujos complejos:
 
@@ -151,7 +151,7 @@ Para que una prueba sea legible y profesional, debe seguir una estructura clara 
 
 #### 1. Desglose de Métricas Críticas
 
-- **Branch Coverage (C1)**: Para un Arquitecto, esta es la métrica reina. Verifica si se han evaluado todos los caminos posibles en estructuras de control (`if`, `switch`, bucles).
+- **Branch Coverage (C1)**: Para un Desarrollador, esta es la métrica reina. Verifica si se han evaluado todos los caminos posibles en estructuras de control (`if`, `switch`, bucles).
   - _Ejemplo_: En un `if (x > 0)`, tener 50% de Branch Coverage significa que solo probaste el caso `true` o el `false`, dejando una vulnerabilidad lógica sin descubrir.
 - **Cyclomatic Complexity**: Mide la complejidad de tus métodos basándose en el número de caminos lineales independientes. Un método con complejidad alta y baja cobertura es un candidato número uno para Refactorización o bugs.
 - **Line Coverage**: Métrica básica que indica si la línea fue "tocada" por el test. Es útil, pero engañosa (puedes tocar una línea sin validar su lógica).
@@ -228,7 +228,7 @@ test {
 }
 
 jacocoTestReport {
-    dependsOn test 
+    dependsOn test
     reports {
         xml.required = true
         html.required = true
@@ -271,15 +271,264 @@ Un 100% de cobertura no garantiza ausencia de bugs (puedes cubrir código con as
 
 Para que una suite de pruebas sea mantenible y escale junto con el proyecto, debemos adherirnos a principios estrictos de diseño. Un mal test es peor que no tener tests, ya que genera falsa confianza y altos costos de mantenimiento.
 
-1. **Naming Convention (Semántica)**: El nombre del test debe ser una oración descriptiva que explique el escenario, la acción y el resultado esperado.
-    - **Anti-patrón**: `testSave()`, `testError()`.
-    - **Patrón Recomendado (BDD Style)**: `shouldThrowException_When_UserIsUnderage()` o `givenValidData_whenSave_thenPersist()`.
+1. **Naming Convention (Semántica)**: El Código es la Documentación Viva
+
+   El nombre del test es el primer punto de contacto para cualquier desarrollador que necesite entender qué valida ese test, en qué condiciones y qué espera. Un nombre ambiguo (`testSave()`) genera fricción: los desarrolladores deben leer el cuerpo del test para entender su propósito, multiplicando el tiempo de mantenimiento y aumentando la probabilidad de cambios inadecuados durante refactorizaciones.
+
+   En sistemas empresariales, una suite de 500 tests sin nombrado coherente se convierte en un **pasivo de deuda técnica**, donde los propios tests son un riesgo de regresión.
+   1. **BDD-Style (Behavior-Driven Development)**
+
+      **Sintaxis**: `should<Resultado>_When<Condición>()`
+
+      **Ejemplos del Caso AppointmentService**:
+
+      ```java
+      @Test
+      void shouldThrowConflictException_WhenDateTimeAlreadyTaken() { ... }
+
+      @Test
+      void shouldPersistAppointment_WhenSlotIsAvailable() { ... }
+
+      @Test
+      void shouldRejectMinorPatient_WhenAgeIsUnder18() { ... }
+      ```
+
+      **Ventajas**:
+      - Comienza con el resultado esperado (`should...`), enfatizando la intención
+      - Extremadamente conciso y legible
+      - Ideal para TDD (Red-Green-Refactor): escribes primero qué **debe** pasar
+      - Reportes de test legibles incluso sin `@DisplayName`
+
+      **Desventajas**:
+      - Puede ser ambiguo si hay múltiples condiciones complejas
+      - Requiere buen juicio para mantener nombres cortos pero informativos
+      - No explícito sobre los datos de entrada (Arrange)
+
+   2. **Given-When-Then (GWT Explícito)**
+
+      **Sintaxis**: `test<Acción>_Given<Precondición>_When<Estímulo>_Then<Resultado>()`
+
+      **Ejemplos del Caso AppointmentService**:
+
+      ```java
+      @Test
+      void testBookAppointment_GivenExistingConflict_WhenBookingSameTime_ThenThrowException() { ... }
+
+      @Test
+      void testBookAppointment_GivenAvailableSlot_WhenProvidingValidData_ThenPersistSuccessfully() { ... }
+
+      @Test
+      void testPatientValidation_GivenMinorAge_WhenAttemptingBooking_ThenRejectAndNotify() { ... }
+      ```
+
+      **Ventajas**:
+      - **Explícitamente estructurado**: cada fase del patrón AAA está en el nombre
+      - Excelente para documentación de requisitos (cercano a lenguaje natural)
+      - Ideal para equipos distribuidos: no hay ambigüedad
+      - Facilita generación automática de reportes de cobertura
+
+      **Desventajas**:
+      - Nombres muy largos (> 80 caracteres en muchos IDEs)
+      - Verbosidad puede abrumar si hay muchas combinaciones de casos
+      - Difícil de leer en algunos contextos (p.ej., grep o búsquedas rápidas)
+
+      **Nota**: Este patrón es el estándar en metodologías Agile/BDD formales (Cucumber, SpecFlow).
+
+   3. **AAA-Pattern (Enfocado en Flujo)**
+
+      **Sintaxis**: `test<Método><Resultado>_With<Condición>()`
+
+      **Ejemplos del Caso AppointmentService**:
+
+      ```java
+      @Test
+      void testBookingConflictDetection_WithOccupiedSlot() { ... }
+
+      @Test
+      void testAppointmentPersistence_WithValidData() { ... }
+
+      @Test
+      void testPatientAgeValidation_WithMinorAge() { ... }
+      ```
+
+      **Ventajas**:
+      - Equilibrio entre concisión y claridad
+      - Enfatiza qué se está probando (testX) y bajo qué condición (WithY)
+      - Fácil de escanear en listas de tests
+      - Nombres moderados en longitud
+
+      **Desventajas**:
+      - Menos descriptivo que GWT para requisitos complejos
+      - Requiere que el lector abra el test para entender qué es "conflict detection"
+      - No es tan "legible en lenguaje natural"
+
+   4. **Técnico/Legacy JUnit Style**
+
+      **Sintaxis**: `test<Método>` o `test<Método><Resultado>`
+
+      **Ejemplos del Caso AppointmentService**:
+
+      ```java
+      @Test
+      void testBookAppointment() { ... }           // ❌ Anti-patrón: demasiado vago
+
+      @Test
+      void testBookAppointmentConflict() { ... }   // ⚠️ Ambiguo: ¿qué tipo de conflicto?
+
+      @Test
+      void testBookAppointmentSuccess() { ... }    // ⚠️ Mejor, pero aún genérico
+      ```
+
+      **Ventajas**:
+      - Conciso al extremo
+      - Nombres cortos, fáciles de escribir
+      - Herencia de código legacy de hace 10+ años
+
+      **Desventajas**:
+      - **No recomendado en código nuevo**: fuerza a leer el cuerpo del test
+      - Sin contexto de negocio: `testBookAppointment()` no dice si es éxito o fallo
+      - Genera reportes de tests inútiles ("Test: testBookAppointment - FAILED")
+      - Aumenta significativamente el tiempo de debugging
+
+   5. **Descriptivo Simple (Narrativo)**
+
+      **Sintaxis**: `should<Acción><Resultado>_When<Condición>()` (narrativa fluida)
+
+      **Ejemplos del Caso AppointmentService**:
+
+      ```java
+      @Test
+      void shouldRejectDuplicateAppointmentTime() { ... }
+
+      @Test
+      void shouldAllowBookingWhenSlotIsFree() { ... }
+
+      @Test
+      void shouldValidatePatientAgeBeforePersistence() { ... }
+      ```
+
+      **Ventajas**:
+      - Lee como una oración natural: "Should reject duplicate appointment time"
+      - Menos "técnico", más "requisito"
+      - Versátil para tutoriales y documentación educativa
+      - Fácil de traducir a otros idiomas
+
+      **Desventajas**:
+      - Menos estructurado que GWT
+      - Requiere disciplina para evitar ambigüedades
+      - Pueden omitirse detalles sobre condiciones complejas
+
+   **Tabla Comparativa de Patrones**
+
+   | Patrón                 | Sintaxis                             | Longitud  | Claridad | Estructurado     | Escalable | Recomendado para                     |
+   | ---------------------- | ------------------------------------ | --------- | -------- | ---------------- | --------- | ------------------------------------ |
+   | **BDD-Style**          | `should<R>_When<C>()`                | Corta     | Alta     | Moderada         | Buena     | TDD, Equipos ágiles                  |
+   | **Given-When-Then**    | `test<A>_Given<P>_When<S>_Then<R>()` | Muy Larga | Muy Alta | Muy Estructurada | Excelente | Specs formales, Equipos distribuidos |
+   | **AAA-Pattern**        | `test<M><R>_With<C>()`               | Moderada  | Buena    | Moderada         | Buena     | Proyectos balance                    |
+   | **Legacy/Técnico**     | `test<M>()`                          | Muy Corta | Baja     | Nula             | Pobre     | ❌ Evitar en código nuevo            |
+   | **Descriptivo Simple** | `should<A><R>_When<C>()`             | Moderada  | Alta     | Moderada         | Buena     | Documentación, Educación             |
+
+   **Anti-patrones a Evitar**
+
+   ```java
+   // ❌ ANTI-PATRÓN 1: Nombres genéricos
+   void testSave() { ... }           // ¿Save qué? ¿Éxito o error?
+   void testError() { ... }          // ¿Qué tipo de error?
+   void test1() { ... }              // Totalmente inútil
+
+   // ❌ ANTI-PATRÓN 2: Nombres que documentan lógica de test, no requisito
+   void testSaveAndThenUpdate() { ... }  // Multiple responsabilidades
+   void testLoopThroughArray() { ... }   // Detalles de implementación
+
+   // ❌ ANTI-PATRÓN 3: Nombres con jerga de infraestructura
+   void testJdbcConnection() { ... }  // En un test unitario, no debe depender de JDBC
+   void testMockRepository() { ... }  // El nombre es sobre el test, no sobre el requisito
+
+   // ❌ ANTI-PATRÓN 4: Nombres que dicen lo que hace, no por qué falla
+   void testNullPointerException() { ... }  // Síntoma, no causa
+   void testAssertionFailed() { ... }       // Circulación: el test SIEMPRE afirma algo
+   ```
+
+   **Matriz de Decisión: Qué Patrón Usar**
+
+   ```plain
+   ¿Es tu proyecto...?
+
+   ├─ NUEVO desde cero
+   │  └─ ¿Tienes metodología BDD/TDD formalmente definida?
+   │     ├─ SÍ (Scrum/Kanban con historias de usuario)
+   │     │  └─ Usa: GIVEN-WHEN-THEN o BDD-STYLE
+   │     └─ NO
+   │        └─ Usa: BDD-STYLE (más pragmático)
+   │
+   ├─ LEGACY / Heredado
+   │  ├─ ¿Está adoptando mejoras de testing?
+   │  │  ├─ Incrementalmente
+   │  │  │  └─ Usa: BDD-STYLE (introduce sin disrupción)
+   │  │  └─ Completa renovación
+   │  │     └─ Usa: GIVEN-WHEN-THEN (reinicio limpio)
+   │  └─ Mantenimiento solamente
+   │     └─ Usa: AAA-PATTERN (balance pragmático)
+   │
+   ├─ EQUIPO DISTRIBUIDO / REMOTO
+   │  └─ Usa: GIVEN-WHEN-THEN (máxima claridad sin ambigüedad)
+   │
+   ├─ EDUCATIVO / Bootcamp
+   │  └─ Usa: DESCRIPTIVO-SIMPLE (enfatiza intención, no jerga)
+   │
+   └─ STARTUP / MVP rápido
+       └─ Usa: BDD-STYLE (velocidad + claridad balance)
+   ```
+
+   **Integración con `@DisplayName` (El Complemento Perfecto)**
+
+   El nombre del método es para el **código** (buscabilidad, refactorización). `@DisplayName` es para **reportes** (Jenkins, GitHub Actions, SonarQube):
+
+   ```java
+   @Test
+   @DisplayName("❌ Rechazar reserva de cita si el horario ya está ocupado")
+   void shouldThrowConflictException_WhenDateTimeAlreadyTaken() {
+       // Arrange
+       Appointment existing = new Appointment(1L, LocalDateTime.now().plusDays(1), "Dr. García");
+       when(repository.findByDateTime(any())).thenReturn(Optional.of(existing));
+
+       // Act & Assert
+       AppointmentConflictException ex = assertThrows(
+           AppointmentConflictException.class,
+           () -> service.bookAppointment(new Appointment(null, LocalDateTime.now().plusDays(1), "Paciente"))
+       );
+       assertTrue(ex.getMessage().contains("reservado"));
+   }
+   ```
+
+   En el reporte de Jenkins, verás:
+
+   ```plain
+   ❌ Rechazar reserva de cita si el horario ya está ocupado
+   ```
+
+   En búsquedas de código, seguirás encontrando por:
+
+   ```plain
+   shouldThrowConflictException_WhenDateTimeAlreadyTaken
+   ```
+
+   **Recomendación Final: Adopta UNA Convención y Sé Consistente**
+
+   _La mejor convención es la que elige tu EQUIPO y respeta en TODOS los tests._
+   - **Startups / Pequeños Equipos**: BDD-STYLE
+   - **Equipos Grandes / Distribuidos**: GIVEN-WHEN-THEN
+   - **Migrando código legacy**: AAA-PATTERN
+   - **Proyectos educativos**: DESCRIPTIVO-SIMPLE
+
+   _Implementa una rule en SonarQube o Checkstyle_ para validar automáticamente que los tests sigan el patrón elegido. Esto evita debates sin fin en PRs.
+
 2. **Determinismo Absoluto (No Flaky Tests)**: Un test debe pasar hoy, mañana, en el año 3000 y en cualquier zona horaria.
-    - **Prohibido**: Usar `LocalDateTime.now()` o `new Date()` directamente dentro de la lógica de negocio sin inyectar un `Clock`.
-    - **Solución**: Simular (Mock) el proveedor de tiempo para controlar el "ahora" durante el test.
+   - **Prohibido**: Usar `LocalDateTime.now()` o `new Date()` directamente dentro de la lógica de negocio sin inyectar un `Clock`.
+   - **Solución**: Simular (Mock) el proveedor de tiempo para controlar el "ahora" durante el test.
 3. **Independencia y Aislamiento**: Nunca encadenes tests. El resultado del _Test A_ no debe ser pre-condición para el _Test B_. JUnit no garantiza el orden de ejecución. Cada test debe preparar su propio entorno (`@BeforeEach`) y limpiarlo si es necesario.
 4. **No Logic inside Tests**: Si tu test contiene estructuras de control como `if`, `while`, `for` o `switch`, es una señal de alta complejidad ciclomática en el test.
-    - _Regla_: El flujo del test debe ser lineal: _Arrange -> Act -> Assert_. Si necesitas lógica condicional, probablemente necesitas dos tests separados.
+   - _Regla_: El flujo del test debe ser lineal: _Arrange -> Act -> Assert_. Si necesitas lógica condicional, probablemente necesitas dos tests separados.
 5. **Una Razón para Fallar (Single Responsibility Principle)**: Evita probar múltiples comportamientos en un solo método (`testSaveAndThenDelete`). Si falla, el diagnóstico es confuso. Divide y vencerás: un test para el guardado, otro para el borrado.
 
 ### G. Justificación Arquitectónica del Aislamiento
@@ -408,8 +657,8 @@ class AppointmentServiceTest {
 
         // Validamos el mensaje de la excepción
         assertTrue(ex.getMessage().contains("horario ya está reservado"));
-        
-        // VERIFICACIÓN DE SEGURIDAD: 
+
+        // VERIFICACIÓN DE SEGURIDAD:
         // El repositorio NUNCA debe intentar guardar si hubo conflicto
         verify(repository, never()).save(any());
     }

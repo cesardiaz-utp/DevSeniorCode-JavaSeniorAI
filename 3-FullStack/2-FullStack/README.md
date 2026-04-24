@@ -6,7 +6,7 @@
 
 [Clase 1](01-IA_Cursor.md) - Inteligencia Artificial en el Desarrollo y Cursor AI
 
-1. El Nuevo Rol del Desarrollador: De "Picapedrero" a Arquitecto
+1. El Nuevo Rol del Desarrollador: De "Picapedrero" a Desarrollador
 2. Introducción a Cursor AI: Más que un Editor
 3. Archivos `.cursorrules`: El Contrato de Comportamiento
 4. Prompt Engineering Avanzado para Developers
