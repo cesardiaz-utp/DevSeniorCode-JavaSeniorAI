@@ -10,7 +10,7 @@
 La llegada de la Inteligencia Artificial Generativa al flujo de trabajo del desarrollo de software no marca el fin de la programación, sino una **evolución en la abstracción**. La IA no está aquí para reemplazar a los desarrolladores, sino para potenciar sus capacidades y eliminar la fricción de la sintaxis repetitiva.
 
 - **El Pasado (Albañiles del Código)**: Antes, nuestra carga cognitiva estaba saturada por la sintaxis. Pasábamos horas escribiendo _boilerplate_, configurando inyecciones de dependencias manuales, cerrando llaves y buscando en Google cómo iterar un mapa en Java. El valor se medía en líneas de código producidas.
-- **El Presente (Desarrolladors y Auditores)**: Ahora, nuestro foco se desplaza hacia el diseño de sistemas, la seguridad y la lógica de negocio.
+- **El Presente (Desarrolladores y Auditores)**: Ahora, nuestro foco se desplaza hacia el diseño de sistemas, la seguridad y la lógica de negocio.
   - **Arquitectura**: Definimos qué debe hacer el sistema, cómo se comunican los microservicios y qué patrones de diseño aplicar.
   - **Auditoría**: La IA escribe la implementación, pero nosotros somos los responsables finales. Debemos tener la capacidad técnica para leer el código generado, identificar vulnerabilidades y asegurar que cumple con los estándares del equipo.
 - **La Regla de Oro de la IA**: _Nunca aceptes código que no entiendas o no puedas explicar_.
@@ -23,14 +23,14 @@ Cursor es un _fork_ directo de VS Code. Esto ofrece una ventaja táctica inmedia
 #### Las Herramientas Clave del Ecosistema Cursor
 
 1. **Chat Lateral (`Cmd+L` / `Ctrl+L`): El Copiloto Conversacional**.
-    - **Ideal para**: Preguntas exploratorias ("¿Cuál es la mejor forma de manejar errores globales en Spring Boot 4?"), dudas de arquitectura, explicación de código legado o debugging de errores complejos pegando el stack trace.
-    - _Ventaja_: Mantiene el historial de la conversación, permitiendo iterar sobre una solución.
+   - **Ideal para**: Preguntas exploratorias ("¿Cuál es la mejor forma de manejar errores globales en Spring Boot 4?"), dudas de arquitectura, explicación de código legado o debugging de errores complejos pegando el stack trace.
+   - _Ventaja_: Mantiene el historial de la conversación, permitiendo iterar sobre una solución.
 2. **Composer (`Cmd+I` / `Ctrl+I`): El Constructor Multi-archivo**.
-    - Esta es la característica diferenciadora más potente. A diferencia de un chat normal que te da fragmentos para copiar y pegar, Composer tiene permisos de escritura en tu sistema de archivos.
-    - _Caso de Uso Real_: "Crea un CRUD completo para la entidad `MedicalAppointment`. Genera el Entity, el Repository, el Service Interface, la implementación del Service y el REST Controller. Asegúrate de crear también los DTOs correspondientes". Composer creará o editará esos 5 archivos simultáneamente.
+   - Esta es la característica diferenciadora más potente. A diferencia de un chat normal que te da fragmentos para copiar y pegar, Composer tiene permisos de escritura en tu sistema de archivos.
+   - _Caso de Uso Real_: "Crea un CRUD completo para la entidad `MedicalAppointment`. Genera el Entity, el Repository, el Service Interface, la implementación del Service y el REST Controller. Asegúrate de crear también los DTOs correspondientes". Composer creará o editará esos 5 archivos simultáneamente.
 3. **Inline Edit (`Cmd+K` / `Ctrl+K`): La Micro-cirugía**.
-    - Diseñado para iteraciones rápidas dentro de un archivo abierto sin perder el foco.
-    - _Ejemplo_: Seleccionas una función y escribes: "Añade manejo de excepciones y loguea el error". La IA mostrará un "diff" (diferencia) visual que puedes aceptar o rechazar.
+   - Diseñado para iteraciones rápidas dentro de un archivo abierto sin perder el foco.
+   - _Ejemplo_: Seleccionas una función y escribes: "Añade manejo de excepciones y loguea el error". La IA mostrará un "diff" (diferencia) visual que puedes aceptar o rechazar.
 
 #### El Contexto es el Rey (RAG - Retrieval Augmented Generation)
 
@@ -90,12 +90,12 @@ Gradle es una herramienta de automatización de compilación de código abierto 
 
 Si bien Maven sigue siendo muy popular, Gradle ha ganado una tracción significativa en la comunidad de Spring por varias razones:
 
-| Característica | Maven | Gradle |
-| --- | --- | --- |
-| **Configuración** | XML (verboso y rígido) | DSL con Groovy/Kotlin(conciso y flexible) |
-| **Rendimiento** | Más lento en compilaciones grandes | Más rápido debido a la caché y compilación incremental |
-| **Flexibilidad** | Convención sobre configuración, difícil de personalizar | Altamente personalizable con lógica de script |
-| **Curva de aprendizaje** | Más fácil para empezar | Requiere aprender Groovy/Kotlin DSL |
+| Característica           | Maven                                                   | Gradle                                                 |
+| ------------------------ | ------------------------------------------------------- | ------------------------------------------------------ |
+| **Configuración**        | XML (verboso y rígido)                                  | DSL con Groovy/Kotlin(conciso y flexible)              |
+| **Rendimiento**          | Más lento en compilaciones grandes                      | Más rápido debido a la caché y compilación incremental |
+| **Flexibilidad**         | Convención sobre configuración, difícil de personalizar | Altamente personalizable con lógica de script          |
+| **Curva de aprendizaje** | Más fácil para empezar                                  | Requiere aprender Groovy/Kotlin DSL                    |
 
 Para muchos desarrolladores, la flexibilidad y el rendimiento de Gradle superan la curva de aprendizaje inicial.
 
@@ -103,7 +103,7 @@ Para muchos desarrolladores, la flexibilidad y el rendimiento de Gradle superan 
 
 La forma más sencilla de iniciar un proyecto Spring Boot con Gradle es a través de **[Spring Initializr](https://start.spring.io)**.
 
-1. Ve a https://start.spring.io.
+1. Ve a [https://start.spring.io](https://start.spring.io).
 2. Selecciona **Gradle Project**.
 3. Elige el lenguaje (Java).
 4. Selecciona una versión estable de Spring Boot.
@@ -169,11 +169,11 @@ tasks.named('test') {
 3. **java.toolchain.languageVersion**: Especifica la versión del lenguaje Java que se utilizará.
 4. **repositories**: Define los repositorios desde los cuales Gradle descargará las dependencias. `mavenCentral()` es el más común.
 5. **dependencies**: El bloque más importante para la gestión de dependencias.
-    - **implementation**: Dependencias necesarias para la compilación y ejecución del código principal.
-    - **compileOnly**: Dependencias necesarias solo en tiempo de compilación (como Lombok).
-    - **runtimeOnly**: Dependencias necesarias solo en tiempo de ejecución.
-    - **developmentOnly**: Dependencias que solo se usan en desarrollo local, como Spring Boot DevTools.
-    - **testImplementation**: Dependencias para compilar y ejecutar tests.
+   - **implementation**: Dependencias necesarias para la compilación y ejecución del código principal.
+   - **compileOnly**: Dependencias necesarias solo en tiempo de compilación (como Lombok).
+   - **runtimeOnly**: Dependencias necesarias solo en tiempo de ejecución.
+   - **developmentOnly**: Dependencias que solo se usan en desarrollo local, como Spring Boot DevTools.
+   - **testImplementation**: Dependencias para compilar y ejecutar tests.
 
 #### Tareas Comunes de Gradle en un Proyecto Spring
 
@@ -217,9 +217,9 @@ El `./gradlew` es el "Gradle Wrapper", un script que descarga y utiliza la versi
 
 1. Descargar e instalar [Cursor](https://cursor.com/) desde el sitio oficial.
 2. Durante la instalación, selecciona la opción "Importar extensiones de VS Code" para mantener tu entorno familiar.
-    - [Extension Pack for Java](https://open-vsx.org/extension/VMware/vscode-boot-dev-pack)
-    - [Spring Boot Extension Pack](https://open-vsx.org/extension/vscjava/vscode-java-pack)
-    - [Angular Language Service](https://open-vsx.org/extension/Angular/ng-template)
+   - [Extension Pack for Java](https://open-vsx.org/extension/VMware/vscode-boot-dev-pack)
+   - [Spring Boot Extension Pack](https://open-vsx.org/extension/vscjava/vscode-java-pack)
+   - [Angular Language Service](https://open-vsx.org/extension/Angular/ng-template)
 3. Abre la carpeta raíz del proyecto, asegurándote de tener acceso a `MediCare-Backend` y `MediCare-Frontend`.
 4. **Verificación**: Abre la paleta de comandos (`Cmd+Shift+P` / `Ctrl+Shift+P`) y escribe "Cursor: Settings" para verificar que la IA está activa.
 
@@ -235,7 +235,8 @@ En la raíz de tu proyecto **Spring Boot**, crea el archivo `.cursorrules`. Este
 You are an expert in Java 25, Spring Boot 4, and Modern REST API development.
 
 ## Code Style & Standards
-- **Java 25 Modern Features**: 
+
+- **Java 25 Modern Features**:
   - ALWAYS use `var` for local variables to improve readability.
   - Use Records (`record`) for all DTOs and immutable data carriers.
   - Use Pattern Matching for `switch` and `instanceof`.
@@ -245,17 +246,20 @@ You are an expert in Java 25, Spring Boot 4, and Modern REST API development.
 - **Collections**: Always use immutable factory methods: `List.of()`, `Set.of()`, `Map.of()`.
 
 ## Spring Boot 4 Best Practices
+
 - **HTTP Client**: Use `RestClient` (the modern, fluent API) instead of the legacy `RestTemplate` or reactive `WebClient` (unless specifically doing streaming).
 - **Security**: Use Spring Security 6+ Lambda DSL configuration (e.g., `.authorizeHttpRequests(auth -> ...)`). Avoid extending `WebSecurityConfigurerAdapter`.
 - **Validation**: Use `jakarta.validation` annotations (`@NotNull`, `@Email`, `@PastOrPresent`) strictly in DTOs, never in Entities.
 - **Error Handling**: Implement global handling using `@ControllerAdvice` and strict `ProblemDetails` format (RFC 7807).
 
 ## Architecture & Layers
+
 - Flow: Controller -> Service Interface -> Service Implementation -> Repository.
 - **Separation of Concerns**: NEVER put business logic in Controllers. Controllers should only handle HTTP request/response mapping.
 - **Data Exposure**: Always return DTOs. NEVER return JPA Entities directly to the client to prevent infinite recursion and leakage of internal schema.
 
 ## Testing Strategy
+
 - Use JUnit 5 and AssertJ for fluent assertions.
 - Use `@MockBean` for mocking dependencies in integration tests.
 - Prefer `Testcontainers` for database integration tests.
@@ -273,23 +277,27 @@ En la raíz de tu proyecto **Angular**, crea el archivo `.cursorrules`.
 You are an expert in Angular 21, TypeScript 5.x, and Tailwind CSS.
 
 ## Angular 21 Core Concepts
+
 - **Strictly Standalone Components**: NgModules are FORBIDDEN. Always use `imports: []` in the `@Component` decorator.
-- **Signals First Architecture**: 
+- **Signals First Architecture**:
   - Use `signal()`, `computed()`, and `effect()` for all local state management.
   - Use `input()` and `output()` (Signal inputs/outputs) instead of the legacy `@Input` and `@Output` decorators.
   - **State Management**: Avoid RxJS for synchronous component state; keep RxJS only for complex asynchronous streams (HTTP) or use `rxResource` / `toSignal` for interoperability.
 - **Dependency Injection**: Use the modern `inject()` function. DO NOT use constructor injection for services.
 
 ## Styling (Tailwind CSS)
+
 - **Utility First**: Use Tailwind utility classes directly in HTML.
 - **No Custom CSS**: Avoid creating `.css` or `.scss` files unless creating complex custom animations or `@apply` abstractions.
 - **Responsive Design**: Ensure mobile-first design using `sm:`, `md:`, `lg:`, `xl:` prefixes standardly.
 
 ## HTML & Templates
+
 - **Control Flow Syntax**: Use the new built-in syntax: `@if`, `@for`, `@switch`, `@defer`. Do NOT use legacy structural directives like `*ngIf` or `*ngFor`.
 - **Image Optimization**: Always use `ngSrc` (NgOptimizedImage directive) instead of `src` for external images to ensure lazy loading and performance.
 
 ## Specific Project Context
+
 - App name: MediCare.
 - Authentication strategy: JWT tokens stored in a generic storage service (Abstract).
 - UI Library: Use pure Tailwind + Headless UI concepts (no heavy component libraries unless specified).
@@ -302,14 +310,14 @@ Vamos a probar la capacidad de la IA para entender el contexto global (`@Codebas
 1. Abre el Chat (`Cmd+L` / `Ctrl+L`).
 2. Escribe el siguiente prompt (observa el uso de contexto):
 
-    ```plain
-    "Analiza @Codebase. Actúa como un Tech Lead y crea un archivo README.md profesional para el repositorio Frontend. Debe incluir:
-    
-    1. Tecnologías usadas (resaltando Angular 21 y Signals).
-    2. Estructura de carpetas actual explicada.
-    3. Guía de instalación y ejecución.
-    4. Una sección de 'Reglas de Desarrollo' generada automáticamente basada en el contenido del archivo .cursorrules."
-    ```
+   ```plain
+   "Analiza @Codebase. Actúa como un Tech Lead y crea un archivo README.md profesional para el repositorio Frontend. Debe incluir:
+
+   1. Tecnologías usadas (resaltando Angular 21 y Signals).
+   2. Estructura de carpetas actual explicada.
+   3. Guía de instalación y ejecución.
+   4. Una sección de 'Reglas de Desarrollo' generada automáticamente basada en el contenido del archivo .cursorrules."
+   ```
 
 3. Revisa el resultado. Observa cómo la IA extrae las reglas que acabamos de definir y las presenta en formato legible para humanos. Guárdalo en la raíz.
 
@@ -318,15 +326,16 @@ Vamos a probar la capacidad de la IA para entender el contexto global (`@Codebas
 _Escenario_: En la Unidad 1, creamos prototipos rápidos de componentes (ej. `PatientListComponent`) que muestran tablas. Probablemente usamos `*ngFor` y CSS tradicional. Vamos a modernizarlo.
 
 1. **Refactorización Inline**:
-    - Abre `PatientListComponent`.
-    - Selecciona todo el bloque `<table>` o `<div>` que contiene la lista.
-    - Presiona `Cmd+K` / `Ctrl+K` (Inline Edit) y escribe:
+   - Abre `PatientListComponent`.
+   - Selecciona todo el bloque `<table>` o `<div>` que contiene la lista.
+   - Presiona `Cmd+K` / `Ctrl+K` (Inline Edit) y escribe:
 
-      ```markdown
-      "Refactoriza esta vista para usar el nuevo Control Flow de Angular 21 (@for iterando sobre la signal de pacientes). Asegúrate de aplicar clases de Tailwind para un diseño de tabla moderno ("zebra striping") y soporte para modo oscuro."
-      ```
+     ```markdown
+     "Refactoriza esta vista para usar el nuevo Control Flow de Angular 21 (@for iterando sobre la signal de pacientes). Asegúrate de aplicar clases de Tailwind para un diseño de tabla moderno ("zebra striping") y soporte para modo oscuro."
+     ```
 
-    - Acepta los cambios y observa la limpieza del código (`@for (patient of patients(); track patient.id)`).
+   - Acepta los cambios y observa la limpieza del código (`@for (patient of patients(); track patient.id)`).
+
 2. **Desafío Avanzado con Composer (Arquitectura de Componentes)**:
 
 - Vamos a elevar el nivel de abstracción creando un componente genérico.
@@ -346,25 +355,25 @@ _Escenario_: En la Unidad 1, creamos prototipos rápidos de componentes (ej. `Pa
 
 ## Resumen de Comandos Cursor y Buenas Prácticas
 
-| Comando | Nombre | Función Principal | Cuándo usarlo (Pro Tip) |
-| --- | --- | --- | --- |
-| `Cmd + L` / `Ctrl + L` | Chat | Conversación y contexto | Para preguntas conceptuales, explicaciones de errores ("¿Qué hace este código?") o planificación antes de codificar. |
-| `Cmd + K` / `Ctrl + K` | Inline Edit | Edición focalizada | Para modificar un bloque de código específico sin perder el contexto visual del archivo. Ideal para refactorizaciones rápidas. |
-| `Cmd + I` / `Ctrl + I` | Composer | Edición Multi-archivo | Para crear nuevas features que tocan Model, View y Controller a la vez, o refactorizaciones masivas. |
-| `@Codebase` | Contexto Global | Indexado Vectorial | Cuando la IA necesita "entender" todo el proyecto para responder (ej: "¿Dónde se usa esta clase?"). |
-| `@Docs` | Documentación | Referencia Externa | Imprescindible para librerías nuevas o específicas (ej: Docs de una librería de pasarela de pagos). |
+| Comando                | Nombre          | Función Principal       | Cuándo usarlo (Pro Tip)                                                                                                        |
+| ---------------------- | --------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `Cmd + L` / `Ctrl + L` | Chat            | Conversación y contexto | Para preguntas conceptuales, explicaciones de errores ("¿Qué hace este código?") o planificación antes de codificar.           |
+| `Cmd + K` / `Ctrl + K` | Inline Edit     | Edición focalizada      | Para modificar un bloque de código específico sin perder el contexto visual del archivo. Ideal para refactorizaciones rápidas. |
+| `Cmd + I` / `Ctrl + I` | Composer        | Edición Multi-archivo   | Para crear nuevas features que tocan Model, View y Controller a la vez, o refactorizaciones masivas.                           |
+| `@Codebase`            | Contexto Global | Indexado Vectorial      | Cuando la IA necesita "entender" todo el proyecto para responder (ej: "¿Dónde se usa esta clase?").                            |
+| `@Docs`                | Documentación   | Referencia Externa      | Imprescindible para librerías nuevas o específicas (ej: Docs de una librería de pasarela de pagos).                            |
 
 ## Errores Comunes y Cómo Mitigarlos
 
 1. **Contexto Insuficiente (La "Amnesia" del LLM)**:
-    - _Síntoma_: La IA genera código genérico que no usa tus clases o DTOs existentes.
-    - _Solución_: No asumas que la IA lo sabe todo. Usa explícitamente `@Files` para apuntar a los archivos relacionados (ej: "Crea un test para `@UserService.java`").
+   - _Síntoma_: La IA genera código genérico que no usa tus clases o DTOs existentes.
+   - _Solución_: No asumas que la IA lo sabe todo. Usa explícitamente `@Files` para apuntar a los archivos relacionados (ej: "Crea un test para `@UserService.java`").
 2. **Confianza Ciega (El "Piloto Automático")**:
-    - _Síntoma_: Aceptas código con imports erróneos o lógica insegura.
-    - _Solución_: Angular 21 y Spring Boot 4 cambian rápido. Si Cursor importa `CommonModule` en Angular, es una señal de alerta (ya no es necesario). Audita siempre los imports.
+   - _Síntoma_: Aceptas código con imports erróneos o lógica insegura.
+   - _Solución_: Angular 21 y Spring Boot 4 cambian rápido. Si Cursor importa `CommonModule` en Angular, es una señal de alerta (ya no es necesario). Audita siempre los imports.
 3. **Sobrecarga de Archivos (Context Window Overflow)**:
-    - _Síntoma_: Si un archivo tiene más de 500-600 líneas, la IA empieza a "olvidar" el principio o el final al hacer ediciones.
-    - _Solución_: Aplica el principio de responsabilidad única. Pide a Cursor: _"Analiza este archivo gigante y propón una estrategia para dividirlo en sub-componentes lógicos o servicios auxiliares"_.
+   - _Síntoma_: Si un archivo tiene más de 500-600 líneas, la IA empieza a "olvidar" el principio o el final al hacer ediciones.
+   - _Solución_: Aplica el principio de responsabilidad única. Pide a Cursor: _"Analiza este archivo gigante y propón una estrategia para dividirlo en sub-componentes lógicos o servicios auxiliares"_.
 4. **Ambigüedad en el Prompt**:
-    - _Error_: "Arregla esto".
-    - _Corrección_: "Arregla el error de NullPointer en la línea 45 validando la entrada antes de procesarla". Sé específico con el qué y el _cómo_.
+   - _Error_: "Arregla esto".
+   - _Corrección_: "Arregla el error de NullPointer en la línea 45 validando la entrada antes de procesarla". Sé específico con el qué y el _cómo_.

@@ -451,33 +451,43 @@ Para que una suite de pruebas sea mantenible y escale junto con el proyecto, deb
 
    **Matriz de Decisión: Qué Patrón Usar**
 
-   ```plain
-   ¿Es tu proyecto...?
+   ```mermaid
+   graph TD
+       A["¿Es tu proyecto...?"] --> B["NUEVO desde cero"]
+       A --> C["LEGACY / Heredado"]
+       A --> D["EQUIPO DISTRIBUIDO"]
+       A --> E["EDUCATIVO / Bootcamp"]
+       A --> F["STARTUP / MVP rápido"]
 
-   ├─ NUEVO desde cero
-   │  └─ ¿Tienes metodología BDD/TDD formalmente definida?
-   │     ├─ SÍ (Scrum/Kanban con historias de usuario)
-   │     │  └─ Usa: GIVEN-WHEN-THEN o BDD-STYLE
-   │     └─ NO
-   │        └─ Usa: BDD-STYLE (más pragmático)
-   │
-   ├─ LEGACY / Heredado
-   │  ├─ ¿Está adoptando mejoras de testing?
-   │  │  ├─ Incrementalmente
-   │  │  │  └─ Usa: BDD-STYLE (introduce sin disrupción)
-   │  │  └─ Completa renovación
-   │  │     └─ Usa: GIVEN-WHEN-THEN (reinicio limpio)
-   │  └─ Mantenimiento solamente
-   │     └─ Usa: AAA-PATTERN (balance pragmático)
-   │
-   ├─ EQUIPO DISTRIBUIDO / REMOTO
-   │  └─ Usa: GIVEN-WHEN-THEN (máxima claridad sin ambigüedad)
-   │
-   ├─ EDUCATIVO / Bootcamp
-   │  └─ Usa: DESCRIPTIVO-SIMPLE (enfatiza intención, no jerga)
-   │
-   └─ STARTUP / MVP rápido
-       └─ Usa: BDD-STYLE (velocidad + claridad balance)
+       B --> B1{"¿BDD/TDD<br/>formalmente<br/>definida?"}
+       B1 -->|SÍ<br/>Scrum/Kanban| B2["✅ GIVEN-WHEN-THEN<br/>o BDD-STYLE"]
+       B1 -->|NO| B3["✅ BDD-STYLE<br/>más pragmático"]
+
+       C --> C1{"¿Mejorando<br/>testing?"}
+       C1 -->|Incrementalmente| C2["✅ BDD-STYLE<br/>introduce sin disrupción"]
+       C1 -->|Completa renovación| C3["✅ GIVEN-WHEN-THEN<br/>reinicio limpio"]
+       C1 -->|Solo mantenimiento| C4["✅ AAA-PATTERN<br/>balance pragmático"]
+
+       D --> D1["✅ GIVEN-WHEN-THEN<br/>máxima claridad"]
+
+       E --> E1["✅ DESCRIPTIVO-SIMPLE<br/>enfatiza intención"]
+
+       F --> F1["✅ BDD-STYLE<br/>velocidad + claridad"]
+
+       style B2 fill:#c8e6c9,color:#000
+       style B3 fill:#c8e6c9,color:#000
+       style C2 fill:#c8e6c9,color:#000
+       style C3 fill:#c8e6c9,color:#000
+       style C4 fill:#c8e6c9,color:#000
+       style D1 fill:#c8e6c9,color:#000
+       style E1 fill:#c8e6c9,color:#000
+       style F1 fill:#c8e6c9,color:#000
+       style A fill:#fff9c4,color:#000
+       style B fill:#ffe0b2,color:#000
+       style C fill:#ffe0b2,color:#000
+       style D fill:#ffe0b2,color:#000
+       style E fill:#ffe0b2,color:#000
+       style F fill:#ffe0b2,color:#000
    ```
 
    **Integración con `@DisplayName` (El Complemento Perfecto)**

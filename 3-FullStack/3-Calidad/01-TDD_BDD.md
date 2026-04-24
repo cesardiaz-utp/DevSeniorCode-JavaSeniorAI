@@ -53,13 +53,13 @@ El **Test-Driven Development (TDD)** no es simplemente una técnica de "probar a
 
 La comunidad de TDD se divide principalmente en dos escuelas de pensamiento que abordan el desarrollo desde ángulos opuestos:
 
-| Característica | Estilo Detroit (Clásico / Sociable) | Estilo London (Mockista / Solitario) |
-| --- | --- | --- |
-| **Origen** | Kent Beck (Extreme Programming) | Steve Freeman / Nat Pryce (GOOS) |
-| **Enfoque** | Estado: Verifica que el resultado sea correcto. | Interacción: Verifica cómo colaboran los objetos. |
-| **Dirección** | **Inside-Out**: Empieza por el dominio (núcleo). | **Outside-In**: Empieza por la periferia (API/UI). |
-| **Uso de Mocks** | Mínimo. Se usan objetos reales siempre que se pueda. | Intensivo. Se "mockean" todas las dependencias. |
-| **Arquitectura** | Favorece el diseño basado en valores y lógica pura. | Favorece el diseño basado en interfaces y roles. |
+| Característica   | Estilo Detroit (Clásico / Sociable)                  | Estilo London (Mockista / Solitario)               |
+| ---------------- | ---------------------------------------------------- | -------------------------------------------------- |
+| **Origen**       | Kent Beck (Extreme Programming)                      | Steve Freeman / Nat Pryce (GOOS)                   |
+| **Enfoque**      | Estado: Verifica que el resultado sea correcto.      | Interacción: Verifica cómo colaboran los objetos.  |
+| **Dirección**    | **Inside-Out**: Empieza por el dominio (núcleo).     | **Outside-In**: Empieza por la periferia (API/UI). |
+| **Uso de Mocks** | Mínimo. Se usan objetos reales siempre que se pueda. | Intensivo. Se "mockean" todas las dependencias.    |
+| **Arquitectura** | Favorece el diseño basado en valores y lógica pura.  | Favorece el diseño basado en interfaces y roles.   |
 
 #### Estilo Detroit (Inside-Out)
 
@@ -210,7 +210,7 @@ void age65SeniorDiscount() {
 ```java
 public class InsuranceEngine {
     public double getDiscount(int age) {
-        // La triangulación forzada por los dos escenarios BDD 
+        // La triangulación forzada por los dos escenarios BDD
         // nos obligó a implementar la lógica de negocio genérica
         return (age >= 65) ? 0.20 : 0.0;
     }
@@ -235,7 +235,6 @@ public class InsuranceEngine {
 
 #### Documentación y Herramientas
 
-- **Dan North**: [Introducing BDD](https://dannorth.net/blog/introducing-bdd/) - El artículo fundacional de BDD.
 - **Cucumber.io**: [Gherkin Reference](https://cucumber.io/docs/gherkin/reference/) - Guía completa de sintaxis para escenarios.
 - **JUnit 6 User Guide**: [Writing Tests](https://docs.junit.org/6.0.3/writing-tests/intro.html) - Documentación oficial para Java moderno.
 - **Angular.dev**: [Testing Guide](https://angular.dev/guide/testing) - Mejores prácticas para testear componentes y Signals.
