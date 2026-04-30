@@ -299,6 +299,6 @@ curl -X POST http://localhost:8080/api/notifications \
    202X-XX-XX ... : ✅ Evento consumido exitosamente desde Kafka: Alerta: Servidor de BD con alta latencia
    ```
 
-2. **En Kafka UI (http://localhost:8081)**:
+2. **En [Kafka UI](http://localhost:8081)**:
    - Ve a la sección **Topics** -> Selecciona `topic-notifications` -> Ve a la pestaña **Messages**.
    - ¡Podrás ver visualmente el mensaje de alerta guardado en el log de eventos de Kafka!
