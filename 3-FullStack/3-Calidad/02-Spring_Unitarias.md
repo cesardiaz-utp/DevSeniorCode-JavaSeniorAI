@@ -17,7 +17,58 @@ Utilizaremos el estándar de oro de la industria: **JUnit 5** como motor de ejec
 
 JUnit 5 no es solo una actualización; es un rediseño modular que separa la API del motor de ejecución. Esta modularidad permite que Jupiter sea el entorno nativo para escribir pruebas modernas en Java 25.
 
+#### Anotaciones Esenciales
+
 - `@Test`: Define el método como una unidad de prueba. Internamente, JUnit instancia la clase de prueba para cada método `@Test`, garantizando independencia total entre casos.
+- `ParameterizedTest`: Permite ejecutar el mismo test con múltiples conjuntos de datos, ideal para validar reglas de negocio con diferentes escenarios sin duplicar código.
+  - `@ValueSource`: Para tipos primitivos o Strings.  
+    _Ejemplo_: Validar que un paciente menor de edad no pueda agendar una cita, probando con edades 0, 5, 17.
+
+    ```java
+    @ParameterizedTest
+    @ValueSource(ints = {0, 5, 17})
+    void testMinorPatient(int age) {
+        Patient patient = new Patient(age);
+        assertFalse(service.canSchedule(patient));
+    }
+    ```
+
+  - `@CsvSource`: Para múltiples parámetros.  
+    _Ejemplo_: Validar combinaciones de roles y permisos para acceder a un recurso.
+
+    ```java
+    @ParameterizedTest
+    @CsvSource({
+        "ADMIN, true",
+        "USER, false",
+        "GUEST, false"
+    })
+    void testAccessControl(String role, boolean expected) {
+        User user = new User(role);
+        assertEquals(expected, service.hasAccess(user));
+    }
+    ```
+
+  - `@MethodSource`: Para casos complejos donde los datos de prueba requieren lógica de construcción o son objetos personalizados.  
+    _Ejemplo_: Validar la capacidad de agendar citas para pacientes con diferentes edades y condiciones médicas.
+
+    ```java
+    @ParameterizedTest
+    @MethodSource("providePatients")
+    void testPatientScheduling(Patient patient, boolean expected) {
+        assertEquals(expected, service.canSchedule(patient));
+    }
+
+    static Stream<Arguments> providePatients() {
+        return Stream.of(
+            Arguments.of(new Patient(0), false),
+            Arguments.of(new Patient(5), false),
+            Arguments.of(new Patient(17), false),
+            Arguments.of(new Patient(18), true)
+        );
+    }
+    ```
+
 - `@BeforeEach` es nuestra herramienta principal para el aislamiento, reseteando los mocks y estados antes de cada prueba.
 
   ```java
@@ -28,7 +79,9 @@ JUnit 5 no es solo una actualización; es un rediseño modular que separa la API
   }
   ```
 
+- `@AfterEach` se usa para limpiar recursos o reiniciar los estados que podrían afectar a pruebas posteriores, aunque en pruebas unitarias puras es menos común.
 - `@BeforeAll` (estático) se usa para configuraciones pesadas una sola vez (raro en pruebas unitarias puras).
+- `@AfterAll` (estático) para liberar recursos globales, como conexiones a bases de datos en pruebas de integración.
 - `@DisplayName`: Un desarrollador escribe código para humanos. Esta anotación permite que el reporte de Jenkins o GitHub Actions muestre "Debería rechazar citas si el médico está de vacaciones" en lugar de `test_err_01()`.
 
   ```java
@@ -36,6 +89,58 @@ JUnit 5 no es solo una actualización; es un rediseño modular que separa la API
   @DisplayName("Debería fallar si el paciente es menor de edad")
   void testMinorPatient() { ... }
   ```
+
+#### `@ExtendWith` en JUnit 5
+
+`@ExtendWith` es la anotación que permite registrar una o más extensiones de JUnit 5 para una clase de prueba.
+
+##### Qué hace
+
+- Le dice a JUnit que use una extensión específica durante el ciclo de vida de la prueba.
+- La extensión puede:
+  - inicializar mocks
+  - manejar inyección de dependencias
+  - controlar el ciclo de vida de los tests
+  - ejecutar lógica antes/después de cada prueba o antes/después de toda la clase
+
+##### Ejemplo típico
+
+```java
+@ExtendWith(MockitoExtension.class)
+class AppointmentServiceTest {
+    @Mock
+    private AppointmentRepository repository;
+
+    @InjectMocks
+    private AppointmentService service;
+
+    // tests...
+}
+```
+
+Aquí `MockitoExtension`:
+
+- crea los mocks marcados con `@Mock`
+- inyecta dependencias en el `@InjectMocks`
+- permite usar Mockito sin inicializar manualmente `MockitoAnnotations.openMocks(this)`
+
+##### Por qué es útil
+
+- Reemplaza al antiguo `@RunWith` de JUnit 4.
+- Hace más limpio el setup de pruebas.
+- Permite usar extensiones estándar o personalizadas.
+- Es compatible con múltiples extensiones:
+  - `@ExtendWith(MockitoExtension.class)`
+  - `@ExtendWith(SpringExtension.class)`
+  - `@ExtendWith(MyCustomExtension.class)`
+
+##### Cuando usarlo
+
+- cuando necesitas inicializar mocks en JUnit 5
+- cuando quieres aplicar configuración global de tests
+- cuando quieres agregar comportamiento transversal a tus pruebas
+
+**Nota**: En JUnit 5, `@ExtendWith` no es exclusivo de Mockito: es el mecanismo genérico de extensión de todo el framework.
 
 ### B. El Arsenal de Aserciones de JUnit 5
 
@@ -52,98 +157,251 @@ Las aserciones son los predicados que determinan si un test pasa o falla. JUnit 
 
 ### C. Aislamiento Estratégico con Mockito
 
-Mockito nos permite aplicar el principio de Inversión de Control en nuestras pruebas. Si el `AppointmentService` depende de un `Repository`, el "Contrato" es lo que importa, no la implementación.
+Mockito es la librería estándar para crear dobles de prueba en Java. En pruebas unitarias, nos permite aislar la lógica de negocio del `AppointmentService` sin levantar Spring ni conectar a la base de datos.
 
-| Concepto                    | Profundización Técnica                                        | Rol en el Ecosistema                                                    |
-| --------------------------- | ------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| `@Mock`                     | Crea un objeto Proxy que intercepta todas las llamadas.       | Sustituye componentes pesados o externos (DB, Colas, APIs).             |
-| `@InjectMocks`              | Realiza una inyección de dependencias basada en tipos.        | Automatiza la creación del Sujeto Bajo Prueba (SUT).                    |
-| **Stubbing (`when`)**       | Programación del comportamiento esperado (Entrada -> Salida). | Define los escenarios (Éxito, Error, Datos vacíos).                     |
-| **Verification (`verify`)** | Auditoría de comportamiento posterior a la ejecución.         | Asegura que las reglas de negocio se ejecuten (ej: ¿Se envió el mail?). |
+- `@ExtendWith(MockitoExtension.class)`: Inicializa Mockito en JUnit 5 y activa las anotaciones de creación de mocks.
+- `@Mock`: Crea una simulación controlada de una dependencia.
+- `@InjectMocks`: Instancia la clase bajo prueba (SUT) e inyecta los mocks en sus dependencias.
+- `@Spy`: Crea un objeto real que puede ser parcial o completamente verificado; se usa cuando queremos conservar comportamiento real salvo alguna llamada.
+- `@MockBean`: se usa en pruebas de integración con Spring Boot, no en pruebas unitarias puras.
 
-**Ejemplo Detallado de Stubbing**: El stubbing es el arte de predecir el futuro de una dependencia para probar cómo reacciona nuestro código. En escenarios profesionales, no solo devolvemos valores simples; manejamos flujos complejos:
+#### Mock vs Stub
 
-- **Lanzamiento de Excepciones**: Fundamental para probar la resiliencia y el manejo de errores (`try-catch` o `ControllerAdvice`).
+- Un _mock_ es el objeto simulado completo que registra interacciones.
+- Un _stub_ es el comportamiento que programamos en ese mock con `when(...).thenReturn(...)` o `thenThrow(...)`.
 
-  ```java
-  // Programamos el mock para que lance una excepción al recibir cualquier ID
-  // Esto simula un error de base de datos o una entidad inexistente.
-  when(repository.findById(anyLong())).thenThrow(new EntityNotFoundException("No encontrado"));
-  ```
+| Concepto                        | Qué hace                                                  | Cuándo usarlo                                                                      |
+| ------------------------------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `@Mock`                         | Crea un objeto Mockito simulado                           | Cuando la clase bajo prueba depende de un repositorio, servicio externo, API o DAO |
+| `@InjectMocks`                  | Inyecta mocks en la clase bajo prueba                     | Para crear automáticamente el SUT con sus dependencias simuladas                   |
+| `@Spy`                          | Crea un objeto real con capacidad de verificación parcial | Cuando necesitamos usar comportamiento real y al mismo tiempo verificar llamadas   |
+| `when(...)` / `thenReturn(...)` | Define la respuesta esperada de un mock                   | Para simular datos de repositorio, respuestas de API o condiciones de error        |
+| `verify(...)`                   | Comprueba que un método fue invocado                      | Para asegurar el comportamiento y evitar efectos secundarios inesperados           |
 
-- **Respuestas Consecutivas (Iterativas)**: Útil para probar bucles o reintentos donde la primera llamada falla y la segunda tiene éxito.
+#### Configuración típica
 
-  ```java
-  // La primera llamada devuelve un error, la segunda éxito
-  when(externalApi.checkStatus())
-      .thenReturn(Status.PENDING)
-      .thenReturn(Status.COMPLETED);
-  ```
+```java
+@ExtendWith(MockitoExtension.class)
+class AppointmentServiceTest {
 
-- **Stubbing basado en lógica (ThenAnswer)**: Cuando la respuesta depende de los argumentos de entrada de forma dinámica.
+    @Mock
+    private AppointmentRepository repository;
 
-  ```java
-  when(repository.save(any(Appointment.class)))
-      .thenAnswer(invocation -> invocation.getArgument(0)); // Devuelve el mismo objeto que recibe
-  ```
+    @InjectMocks
+    private AppointmentService service;
 
-**Verificación por Número de Invocaciones**: A menudo, la lógica de negocio exige que un método se ejecute una cantidad específica de veces. Mockito permite auditar esto con precisión:
+    private Appointment appointmentData;
 
-- **Exactitud (`times(n)`)**: Este verificador asegura que un método se haya ejecutado exactamente un número determinado de veces. Su uso es crítico para prevenir errores de duplicidad que podrían causar estados inconsistentes en la base de datos o disparar eventos repetidos innecesarios.
+    @BeforeEach
+    void init() {
+        appointmentData = new Appointment(10L, LocalDateTime.now().plusDays(2), "Ana Smith");
+    }
 
-  ```java
-  // Útil para asegurar que no se guardó la cita dos veces accidentalmente
-  verify(repository, times(1)).save(any());
-  ```
+    @Test
+    @DisplayName("Reservar cita cuando el slot está vacío")
+    void shouldCompleteBookingProcess() {
+        when(repository.findByDateTime(any())).thenReturn(Optional.empty());
+        when(repository.save(any())).thenReturn(appointmentData);
 
-- **Ausencia de Llamada (`never()`)**: Es la herramienta por excelencia para las pruebas de flujos negativos. En escenarios donde una validación falla, debemos certificar que no se produjeron efectos secundarios, como escrituras en disco o llamadas a APIs externas.
+        Appointment saved = service.bookAppointment(appointmentData);
 
-  ```java
-  // Si la validación falló, el repositorio NUNCA debe ser llamado
-  verify(repository, never()).save(any());
-  ```
+        assertAll(
+            () -> assertNotNull(saved),
+            () -> assertEquals("Ana Smith", saved.patientName()),
+            () -> verify(repository, times(1)).save(any())
+        );
+    }
+}
+```
 
-- **Rangos y Límites (`atLeast`, `atMost`)**: Existen casos donde el número exacto de llamadas no es predecible pero sí debe estar dentro de un rango lógico. Esto es común en procesos de reintento, logging o notificaciones opcionales.
+#### Inicialización manual en `@BeforeEach`
 
-  ```java
-  verify(notificationService, atLeastOnce()).send(any());
-  verify(logger, atMost(3)).info(anyString());
-  ```
+Si prefieres no usar `@InjectMocks`, puedes inicializar los mocks manualmente. Esto hace explícita la creación del SUT y ayuda a comprender mejor la inyección de dependencias en pruebas unitarias.
 
-- **Control de Flujos Únicos (`only()`)**: Verifica que un método específico fue el único que se llamó en todo el Mock, garantizando que no hubo interacciones colaterales imprevistas que pudieran indicar una fuga de lógica o una mala implementación del servicio.
+```java
+class AppointmentServiceTest {
 
-**Ejemplo Detallado de Verification**: La verificación no solo confirma que el código "pasó por ahí", sino que lo hizo bajo las condiciones exactas de seguridad y negocio:
+    private AppointmentRepository repository;
+    private AppointmentService service;
+    private AutoCloseable closeable;
+    private Appointment appointmentData;
 
-- **Verificación de Inactividad (Negative Testing)**: Es vital asegurar que si una validación falla, los datos no se persistan.
+    @BeforeEach
+    void init() {
+        repository = mock(AppointmentRepository.class);
+        service = new AppointmentService(repository);
+        appointmentData = new Appointment(10L, LocalDateTime.now().plusDays(2), "Ana Smith");
+    }
 
-  ```java
-  // Si la lógica de negocio detecta un error previo, garantizamos integridad
-  service.process(data); // El proceso debería fallar antes de llegar a la API
-  verify(externalApi, never()).sendRequest(any());
-  ```
+    @AfterEach
+    void cleanup() throws Exception {
+        if (closeable != null) {
+            closeable.close();
+        }
+    }
 
-- **Verificación de Orden (InOrder)**: Crucial en sistemas financieros o de reservas donde el paso A debe ocurrir antes que el B.
+    @Test
+    void shouldCompleteBookingProcess() {
+        when(repository.findByDateTime(any())).thenReturn(Optional.empty());
+        when(repository.save(any())).thenReturn(appointmentData);
 
-  ```java
-  InOrder inOrder = inOrder(repository, notificationService);
-  inOrder.verify(repository).save(any());
-  inOrder.verify(notificationService).sendEmail(any());
-  ```
+        Appointment saved = service.bookAppointment(appointmentData);
 
-- **Verificación Exacta de Llamadas**: Controlar que no existan efectos secundarios inesperados.
+        assertAll(
+            () -> assertNotNull(saved),
+            () -> assertEquals("Ana Smith", saved.patientName()),
+            () -> verify(repository, times(1)).save(any())
+        );
+    }
+}
+```
 
-  ```java
-  // Asegura que no se llamaron a otros métodos de este mock aparte de los verificados
-  verifyNoMoreInteractions(repository);
-  ```
+Otra forma de inicializar los mocks es con `MockitoAnnotations.openMocks(this)` en `@BeforeEach`, especialmente si deseas mantener las anotaciones `@Mock` sin usar `MockitoExtension`.
 
-### D. El Patrón AAA (Arrange, Act, Assert)
+```java
+class AppointmentServiceTest {
+
+    @Mock
+    private AppointmentRepository repository;
+    private AppointmentService service;
+
+    @BeforeEach
+    void init() {
+        MockitoAnnotations.openMocks(this);
+        service = new AppointmentService(repository);
+    }
+}
+```
+
+#### Uso de matchers
+
+Mockito ofrece una variedad de matchers para definir condiciones flexibles en los stubs y verificaciones:
+
+- `any()`: acepta cualquier valor compatible.
+- `anyLong()`, `anyString()`, `any(Appointment.class)`: versiones específicas por tipo.
+- `eq(value)`: compara con un valor exacto.
+- `argThat(predicate)`: para validaciones más complejas sobre el argumento.
+
+> Importante: no mezcles valores literales y matchers en una misma invocación; si usas matchers en un parámetro, usa matchers en todos los parámetros de ese método.
+
+#### Stubbing práctico
+
+- `when(repository.findById(anyLong())).thenThrow(new EntityNotFoundException("No encontrado"));`
+  - simula que la dependencia lanza una excepción.
+- `when(externalApi.checkStatus()).thenReturn(Status.PENDING).thenReturn(Status.COMPLETED);`
+  - simula respuestas consecutivas, útil para reintentos.
+- `when(repository.save(any(Appointment.class))).thenAnswer(invocation -> invocation.getArgument(0));`
+  - devuelve dinámicamente el objeto recibido.
+
+#### Verificación de comportamiento
+
+- `verify(repository, times(1)).save(any());`
+  - asegura que se guardó exactamente una vez.
+- `verify(repository, never()).save(any());`
+  - garantiza que no se realizó ninguna persistencia en flujos fallidos.
+- `verify(notificationService, atLeastOnce()).send(any());`
+  - valida que la notificación se envió al menos una vez.
+- `verify(logger, atMost(3)).info(anyString());`
+  - evita que un código loguee más de lo esperado.
+- `verify(repository, only()).save(any());`
+  - comprueba que el único método llamado en el mock fue `save()`.
+- `verifyNoMoreInteractions(repository);`
+  - asegura que no hubo otras llamadas no previstas.
+
+#### Orden de llamadas
+
+```java
+InOrder inOrder = inOrder(repository, notificationService);
+inOrder.verify(repository).save(any());
+inOrder.verify(notificationService).sendEmail(any());
+```
+
+#### Mejores prácticas con Mockito
+
+- No mockees la clase que estás probando; mockea solo sus dependencias.
+- Usa Mockito para aislar dependencias externas o costosas, no para probar lógica interna.
+- Evita lógica compleja en los tests: el test debe ser Arrange, Act, Assert.
+- Prefiere nombres descriptivos para los tests y usa `@DisplayName` para mejorar los reportes.
+- Cuando tu prueba necesita el contexto de Spring, usa pruebas de integración específicas; en unitarias, mantén `MockitoExtension` y POJOs.
+
+#### Ejemplo de flujo negativo
+
+```java
+when(repository.findByDateTime(appointmentData.dateTime()))
+    .thenReturn(Optional.of(new Appointment(1L, appointmentData.dateTime(), "Paciente Existente")));
+
+AppointmentConflictException ex = assertThrows(AppointmentConflictException.class,
+    () -> service.bookAppointment(appointmentData));
+
+assertTrue(ex.getMessage().contains("horario ya está reservado"));
+verify(repository, never()).save(any());
+```
+
+### D. Los patrones AAA (Arrange, Act, Assert) y GWT (Given-When-Then)
+
+#### Patrón AAA (Arrange-Act-Assert)
 
 Para que una prueba sea legible y profesional, debe seguir una estructura clara que incluso un no-programador pueda seguir:
 
 1. **Arrange (Preparar)**: Configuramos los Mocks y los datos de entrada.
 2. **Act (Actuar)**: Invocamos el método específico que estamos probando.
 3. **Assert (Verificar)**: Validamos que el resultado y el comportamiento de los mocks coincidan con lo esperado.
+
+**Ejemplo de AAA en una prueba unitaria:**
+
+```java
+@Test
+void shouldBookAppointmentWhenSlotIsAvailable() {
+    // Arrange: Preparar datos y mocks
+    when(repository.findByDateTime(any())).thenReturn(Optional.empty());
+    when(repository.save(any())).thenReturn(appointmentData);
+
+    // Act: Ejecutar la acción bajo prueba
+    Appointment saved = service.bookAppointment(appointmentData);
+
+    // Assert: Verificar resultados y comportamiento
+    assertAll(
+        () -> assertNotNull(saved),
+        () -> assertEquals("Ana Smith", saved.patientName()),
+        () -> verify(repository, times(1)).save(any())
+    );
+}
+```
+
+#### Patrón GWT (Given-When-Then) - Alternativa BDD
+
+El patrón **Given-When-Then** (GWT) es una variante del AAA enfocada en **Behavior-Driven Development (BDD)**. Se usa para escribir pruebas que describan el comportamiento esperado desde la perspectiva del usuario o negocio, facilitando la colaboración entre desarrolladores, testers y stakeholders.
+
+- **Given (Dado)**: Establece el contexto inicial o precondiciones (equivalente a Arrange).
+- **When (Cuando)**: Describe la acción o estímulo que ocurre (equivalente a Act).
+- **Then (Entonces)**: Especifica el resultado esperado o post-condiciones (equivalente a Assert).
+
+**Ejemplo de GWT en una prueba unitaria:**
+
+```java
+@Test
+void givenAvailableSlot_whenBookingAppointment_thenShouldPersistSuccessfully() {
+    // Given: Dado un slot disponible
+    when(repository.findByDateTime(any())).thenReturn(Optional.empty());
+    when(repository.save(any())).thenReturn(appointmentData);
+
+    // When: Cuando se intenta reservar la cita
+    Appointment saved = service.bookAppointment(appointmentData);
+
+    // Then: Entonces la cita debe persistirse exitosamente
+    assertAll(
+        () -> assertNotNull(saved),
+        () -> assertEquals("Ana Smith", saved.patientName()),
+        () -> verify(repository, times(1)).save(any())
+    );
+}
+```
+
+**Cuándo usar AAA vs GWT:**
+
+- **Usa AAA** cuando escribes pruebas técnicas enfocadas en la implementación (TDD puro).
+- **Usa GWT** cuando las pruebas deben ser legibles para no-técnicos o cuando sigues metodologías BDD como Cucumber.
+- Ambos patrones son compatibles; elige el que mejor se adapte al contexto del equipo y proyecto.
 
 ### E. Cobertura de Código con JaCoCo (Java Code Coverage)
 
@@ -223,9 +481,15 @@ plugins {
     id 'jacoco'
 }
 
-test {
+tasks.named('test') {
     finalizedBy jacocoTestReport // El reporte se genera después de los tests
 }
+
+def jacocoExcludes = [
+    '**/config/**', // Excluye clases de configuración
+    '**/dto/**',    // Excluye DTOs (si solo son contenedores de datos)
+    '**/Application.class' // Excluye la clase principal de Spring Boot
+]
 
 jacocoTestReport {
     dependsOn test
@@ -233,9 +497,23 @@ jacocoTestReport {
         xml.required = true
         html.required = true
     }
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: jacocoExcludes)
+        }))
+    }
 }
 
 jacocoTestCoverageVerification {
+    dependsOn test
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: jacocoExcludes)
+        }))
+    }
+
     violationRules {
         rule {
             element = 'PACKAGE'
@@ -255,6 +533,8 @@ jacocoTestCoverageVerification {
 
 // Obliga a verificar cobertura al ejecutar 'check'
 check.dependsOn jacocoTestCoverageVerification
+
+bootJar dependsOn jacocoTestReport // Genera el reporte antes de empaquetar la aplicación
 ```
 
 Para ejecutar las pruebas y ver la cobertura, los alumnos deben ejecutar:
