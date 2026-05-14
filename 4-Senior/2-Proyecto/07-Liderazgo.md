@@ -4,6 +4,8 @@
 
 La transición a Senior implica pasar de ser un **solucionador de problemas técnicos** a ser un **habilitador de soluciones de negocio**. Un Senior no es el que pica más código; es el que hace que todo el equipo escriba mejor código. Este cambio requiere entender que el código es solo una herramienta, no el fin último. La madurez profesional se alcanza cuando el desarrollador prioriza la mantenibilidad, la escalabilidad humana y el valor entregado por encima de la complejidad técnica o el brillo personal.
 
+![Camino hacia el Desarrollador Senior](./assets/SeniorTravel.png)
+
 ## 1. El Senior no es el que más codifica
 
 ### El Arte del Mentoring y la Multiplicación de Impacto
@@ -46,7 +48,7 @@ Estimar es una de las tareas más difíciles en ingeniería porque implica prede
 ### Story Points vs. Horas: La Lógica del Esfuerzo Relativo
 
 - **El Fallo de las Horas**: El tiempo es una medida absoluta, pero la capacidad es altamente subjetiva. Una "hora" de un Senior no rinde lo mismo que una "hora" de un Junior. Además, estimar en horas no tiene en cuenta la ley de Parkinson ni las interrupciones constantes (reuniones, correos, incidentes).
-- **Story Points (La Tríada de la Complejidad)**: Los puntos miden el esfuerzo relativo basándose en tres factores:
+- **Story Points (La Triada de la Complejidad)**: Los puntos miden el esfuerzo relativo basándose en tres factores:
   1. **Complejidad**: ¿Qué tan difícil es la lógica técnica?
   2. **Incertidumbre**: ¿Qué tanto desconocemos de la implementación o de las dependencias externas?
   3. **Esfuerzo/Volumen**: ¿Cuántas piezas hay que tocar, aunque la tarea sea sencilla?
